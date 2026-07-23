@@ -6,25 +6,28 @@ from google import genai
 
 load_dotenv()
 
-api_key = os.getenv("GOOGLE_API_KEY")
-
-client = genai.Client(api_key=api_key)
-
 logger = logging.getLogger("GeminiModel")
 
-# Priority list of verified active models
+# Priority list of active official Google Gemini models
 MODEL_PRIORITY = [
-    "gemini-3.6-flash",
-    "gemini-3.5-flash",
-    "gemini-3.1-flash-lite",
-    "gemini-2.0-flash"
+    "gemini-2.5-flash",
+    "gemini-2.0-flash",
+    "gemini-1.5-flash",
+    "gemini-1.5-pro"
 ]
+
+def get_gemini_client():
+    api_key = os.getenv("GOOGLE_API_KEY") or os.getenv("GEMINI_API_KEY")
+    if not api_key:
+        raise ValueError("Missing Gemini API Key. Please set GOOGLE_API_KEY or GEMINI_API_KEY in your environment / Vercel settings.")
+    return genai.Client(api_key=api_key)
 
 def generate_agent_response(prompt: str, system_prompt: str = "") -> str:
     """
     Sends prompt to Gemini using retry per model and fallback strategy.
     """
     contents = f"{system_prompt}\n\n{prompt}".strip() if system_prompt else prompt
+    client = get_gemini_client()
     
     last_error = None
     for model_name in MODEL_PRIORITY:
@@ -41,13 +44,22 @@ def generate_agent_response(prompt: str, system_prompt: str = "") -> str:
                 err_str = str(e)
                 logger.warning(f"Attempt {attempt} failed for {model_name}: {err_str[:100]}")
                 
+                # If invalid key / unauthenticated, fail early with clear guidance
+                if "401" in err_str or "UNAUTHENTICATED" in err_str:
+                    raise RuntimeError(
+                        "Invalid or Unauthorized GOOGLE_API_KEY. "
+                        "Please get a valid Gemini API Key from https://aistudio.google.com/app/apikey "
+                        "and set it in your .env file or Vercel Environment Variables."
+                    ) from e
+
                 # If 503 or 429 transient error, wait before retry
                 if "503" in err_str or "429" in err_str or "UNAVAILABLE" in err_str:
                     time.sleep(attempt * 2)
                     continue
                 else:
-                    # 404 or other permanent error -> break retry loop and try next model
+                    # 404 or other permanent model error -> try next model
                     break
             
     raise RuntimeError(f"All Gemini models failed. Last error: {last_error}")
+
 
