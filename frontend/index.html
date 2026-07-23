@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Agent Collaboration AI Hub</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Marked.js for Markdown Rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="background-globes">
+        <div class="globe globe-1"></div>
+        <div class="globe globe-2"></div>
+        <div class="globe globe-3"></div>
+    </div>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="brand">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-network-wired"></i>
+                </div>
+                <div>
+                    <h1>Multi-Agent AI Collaboration Platform</h1>
+                    <p class="subtitle">Autonomous 5-Agent Collaborative Pipeline (Planner • Researcher • Analyst • Reviewer • Reporter)</p>
+                </div>
+            </div>
+            <div class="status-badge" id="system-status">
+                <span class="status-dot green"></span> System Ready
+            </div>
+        </header>
+
+        <!-- Main Grid -->
+        <main class="main-content">
+            <!-- Left Panel: Input & Control -->
+            <section class="input-panel glass-card">
+                <h2><i class="fa-solid fa-compass-drafting"></i> Initiate Workflow</h2>
+                <p class="panel-desc">Describe your request or goal. The 5 AI agents will autonomously plan, research, analyze, review, and report.</p>
+
+                <div class="input-group">
+                    <textarea id="user-query" placeholder="e.g., Build an AI Chatbot using Streamlit and Gemini API..." rows="4"></textarea>
+                </div>
+
+                <div class="preset-chips">
+                    <span class="chip-label">Quick Prompts:</span>
+                    <button class="chip" onclick="setPrompt('Plan a 3-day road trip from Pune to Goa with hotels, picnic spots & best route analysis')">🚗 Pune to Goa Road Trip</button>
+                    <button class="chip" onclick="setPrompt('Plan a 2-day weekend trip from Mumbai to Mahabaleshwar showing hotels, sightseeing & easy routes')">⛰️ Mahabaleshwar Trip</button>
+                    <button class="chip" onclick="setPrompt('Plan step-by-step 2-BHK house construction with budget & permits')">🏠 House Construction</button>
+                    <button class="chip" onclick="setPrompt('Build AI Chatbot using Streamlit and Gemini API')">🤖 Streamlit Chatbot</button>
+                </div>
+
+
+                <button id="run-btn" class="btn-primary" onclick="startWorkflow()">
+                    <i class="fa-solid fa-rocket"></i> Launch 5-Agent Pipeline
+                </button>
+
+                <!-- Workflow Execution Progress -->
+                <div class="progress-section" id="progress-container">
+                    <h3>Agent Execution Pipeline</h3>
+                    <div class="agent-steps">
+                        <div class="step-card" id="step-planner">
+                            <div class="step-header">
+                                <span class="step-num">1</span>
+                                <span class="step-title">Planner Agent</span>
+                                <span class="step-badge pending" id="badge-planner">Waiting</span>
+                            </div>
+                            <p class="step-desc">Decomposes request into sub-tasks</p>
+                        </div>
+
+                        <div class="step-card" id="step-researcher">
+                            <div class="step-header">
+                                <span class="step-num">2</span>
+                                <span class="step-title">Researcher Agent</span>
+                                <span class="step-badge pending" id="badge-researcher">Waiting</span>
+                            </div>
+                            <p class="step-desc">Gathers technical & architectural facts</p>
+                        </div>
+
+                        <div class="step-card" id="step-analyst">
+                            <div class="step-header">
+                                <span class="step-num">3</span>
+                                <span class="step-title">Analyst Agent</span>
+                                <span class="step-badge pending" id="badge-analyst">Waiting</span>
+                            </div>
+                            <p class="step-desc">Evaluates trade-offs, pros & cons</p>
+                        </div>
+
+                        <div class="step-card" id="step-reviewer">
+                            <div class="step-header">
+                                <span class="step-num">4</span>
+                                <span class="step-title">Reviewer Agent</span>
+                                <span class="step-badge pending" id="badge-reviewer">Waiting</span>
+                            </div>
+                            <p class="step-desc">Audits quality, gaps & edge cases</p>
+                        </div>
+
+                        <div class="step-card" id="step-reporter">
+                            <div class="step-header">
+                                <span class="step-num">5</span>
+                                <span class="step-title">Reporter Agent</span>
+                                <span class="step-badge pending" id="badge-reporter">Waiting</span>
+                            </div>
+                            <p class="step-desc">Synthesizes final executive report</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Panel: Agent Outputs & Final Report -->
+            <section class="output-panel">
+                <div class="glass-card output-card">
+                    <div class="tab-header">
+                        <div class="tabs">
+                            <button class="tab-btn active" onclick="switchTab('final-report')"><i class="fa-solid fa-file-contract"></i> Final Report</button>
+                            <button class="tab-btn" onclick="switchTab('agent-outputs')"><i class="fa-solid fa-layer-group"></i> Agent Outputs</button>
+                        </div>
+                        <div class="action-btns">
+                            <button class="btn-secondary" onclick="copyReport()"><i class="fa-regular fa-copy"></i> Copy</button>
+                            <button class="btn-secondary" onclick="downloadReport()"><i class="fa-solid fa-download"></i> Export Markdown</button>
+                        </div>
+                    </div>
+
+                    <!-- Final Report Tab Content -->
+                    <div id="final-report" class="tab-content active">
+                        <div class="placeholder-state" id="report-placeholder">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            <h3>No Workflow Executed Yet</h3>
+                            <p>Enter your prompt on the left and click "Launch 5-Agent Pipeline" to generate your collaborative AI report.</p>
+                        </div>
+                        <div id="report-rendered" class="markdown-body hidden"></div>
+                    </div>
+
+                    <!-- Agent Outputs Tab Content -->
+                    <div id="agent-outputs" class="tab-content">
+                        <div class="accordion">
+                            <div class="accordion-item">
+                                <div class="accordion-header" onclick="toggleAccordion('acc-planner')">
+                                    <span>1️⃣ Planner Agent Output</span>
+                                    <i class="fa-solid fa-chevron-down"></i>
+                                </div>
+                                <div class="accordion-body" id="acc-planner">
+                                    <div class="markdown-body" id="output-planner"><em>No output generated yet.</em></div>
+                                </div>
+                            </div>
+
+                            <div class="accordion-item">
+                                <div class="accordion-header" onclick="toggleAccordion('acc-researcher')">
+                                    <span>2️⃣ Researcher Agent Output</span>
+                                    <i class="fa-solid fa-chevron-down"></i>
+                                </div>
+                                <div class="accordion-body" id="acc-researcher">
+                                    <div class="markdown-body" id="output-researcher"><em>No output generated yet.</em></div>
+                                </div>
+                            </div>
+
+                            <div class="accordion-item">
+                                <div class="accordion-header" onclick="toggleAccordion('acc-analyst')">
+                                    <span>3️⃣ Analyst Agent Output</span>
+                                    <i class="fa-solid fa-chevron-down"></i>
+                                </div>
+                                <div class="accordion-body" id="acc-analyst">
+                                    <div class="markdown-body" id="output-analyst"><em>No output generated yet.</em></div>
+                                </div>
+                            </div>
+
+                            <div class="accordion-item">
+                                <div class="accordion-header" onclick="toggleAccordion('acc-reviewer')">
+                                    <span>4️⃣ Reviewer Agent Output</span>
+                                    <i class="fa-solid fa-chevron-down"></i>
+                                </div>
+                                <div class="accordion-body" id="acc-reviewer">
+                                    <div class="markdown-body" id="output-reviewer"><em>No output generated yet.</em></div>
+                                </div>
+                            </div>
+
+                            <div class="accordion-item">
+                                <div class="accordion-header" onclick="toggleAccordion('acc-reporter')">
+                                    <span>5️⃣ Reporter Agent Output</span>
+                                    <i class="fa-solid fa-chevron-down"></i>
+                                </div>
+                                <div class="accordion-body" id="acc-reporter">
+                                    <div class="markdown-body" id="output-reporter"><em>No output generated yet.</em></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
