@@ -1,7 +1,35 @@
 let lastReportMarkdown = "";
 
+function showToast(message, isError = false) {
+    const toast = document.getElementById("toast");
+    const toastMsg = document.getElementById("toast-msg");
+    const toastIcon = document.getElementById("toast-icon");
+
+    if (!toast || !toastMsg) return;
+
+    toastMsg.innerText = message;
+    if (isError) {
+        toastIcon.className = "fa-solid fa-triangle-exclamation";
+        toast.style.borderColor = "rgba(244, 63, 94, 0.4)";
+        toast.style.background = "rgba(244, 63, 94, 0.15)";
+    } else {
+        toastIcon.className = "fa-solid fa-circle-check";
+        toast.style.borderColor = "rgba(16, 185, 129, 0.4)";
+        toast.style.background = "rgba(16, 185, 129, 0.15)";
+    }
+
+    toast.classList.remove("hidden");
+    toast.classList.add("show");
+
+    setTimeout(() => {
+        toast.classList.remove("show");
+        setTimeout(() => toast.classList.add("hidden"), 300);
+    }, 3000);
+}
+
 function setPrompt(text) {
     document.getElementById("user-query").value = text;
+    showToast("Quick prompt loaded into query box");
 }
 
 function switchTab(tabId) {
@@ -53,33 +81,44 @@ async function startWorkflow() {
     const query = queryInput.value.trim();
 
     if (!query) {
-        alert("Please enter a request or select a quick prompt.");
+        showToast("Please enter a request or select a prompt.", true);
         return;
     }
 
     runBtn.disabled = true;
-    runBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Agents Collaborating...';
+    runBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> 5 Agents Collaborating...';
 
     // Reset Agent Status Cards
-    ["planner", "researcher", "analyst", "reviewer", "reporter"].forEach(a => setAgentState(a, "pending"));
+    const agents = ["planner", "researcher", "analyst", "reviewer", "reporter"];
+    agents.forEach(a => setAgentState(a, "pending"));
 
     // Reset Outputs
     document.getElementById("report-placeholder").classList.remove("hidden");
     document.getElementById("report-rendered").classList.add("hidden");
     document.getElementById("report-rendered").innerHTML = "";
-    ["planner", "researcher", "analyst", "reviewer", "reporter"].forEach(a => {
-        document.getElementById(`output-${a}`).innerHTML = "<em>Processing...</em>";
+    agents.forEach(a => {
+        document.getElementById(`output-${a}`).innerHTML = "<em>Processing agent output...</em>";
     });
 
+    // Animate Step Progress
+    let agentIdx = 0;
+    setAgentState(agents[agentIdx], "running");
+    const stepInterval = setInterval(() => {
+        if (agentIdx < agents.length - 1) {
+            setAgentState(agents[agentIdx], "completed");
+            agentIdx++;
+            setAgentState(agents[agentIdx], "running");
+        }
+    }, 1500);
+
     try {
-        // Step 1: Planner
-        setAgentState("planner", "running");
-        
         const response = await fetch("/api/run", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ query: query })
         });
+
+        clearInterval(stepInterval);
 
         if (!response.ok) {
             const errData = await response.json();
@@ -89,7 +128,7 @@ async function startWorkflow() {
         const data = await response.json();
 
         // Mark all completed & update outputs
-        ["planner", "researcher", "analyst", "reviewer", "reporter"].forEach(a => setAgentState(a, "completed"));
+        agents.forEach(a => setAgentState(a, "completed"));
 
         document.getElementById("output-planner").innerHTML = marked.parse(data.planner || "");
         document.getElementById("output-researcher").innerHTML = marked.parse(data.researcher || "");
@@ -105,10 +144,12 @@ async function startWorkflow() {
         reportDiv.classList.remove("hidden");
 
         switchTab("final-report");
+        showToast("5-Agent Collaborative Pipeline Completed!");
 
     } catch (err) {
-        alert("Execution Error: " + err.message);
-        ["planner", "researcher", "analyst", "reviewer", "reporter"].forEach(a => setAgentState(a, "pending"));
+        clearInterval(stepInterval);
+        showToast("Execution Error: " + err.message, true);
+        agents.forEach(a => setAgentState(a, "pending"));
     } finally {
         runBtn.disabled = false;
         runBtn.innerHTML = '<i class="fa-solid fa-rocket"></i> Launch 5-Agent Pipeline';
@@ -117,16 +158,16 @@ async function startWorkflow() {
 
 function copyReport() {
     if (!lastReportMarkdown) {
-        alert("No report generated to copy yet.");
+        showToast("No report generated to copy yet.", true);
         return;
     }
     navigator.clipboard.writeText(lastReportMarkdown);
-    alert("Report markdown copied to clipboard!");
+    showToast("Report Markdown copied to clipboard!");
 }
 
 function downloadReport() {
     if (!lastReportMarkdown) {
-        alert("No report generated to download yet.");
+        showToast("No report generated to download yet.", true);
         return;
     }
     const blob = new Blob([lastReportMarkdown], { type: "text/markdown" });
@@ -138,4 +179,30 @@ function downloadReport() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+    showToast("Report Markdown downloaded!");
+}
+
+function exportPDF() {
+    if (!lastReportMarkdown) {
+        showToast("No report generated to export as PDF yet.", true);
+        return;
+    }
+
+    showToast("Generating PDF document...");
+    const reportElement = document.getElementById("report-rendered");
+    
+    // PDF Export Configuration
+    const opt = {
+        margin:       12,
+        filename:     'multi_agent_collaborative_report.pdf',
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#0a0e1a' },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    html2pdf().set(opt).from(reportElement).save().then(() => {
+        showToast("PDF Export downloaded successfully!");
+    }).catch(err => {
+        showToast("PDF Export failed: " + err.message, true);
+    });
 }

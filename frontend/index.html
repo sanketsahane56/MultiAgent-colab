@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Marked.js for Markdown Rendering -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- html2pdf.js for PDF Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
@@ -19,6 +21,12 @@
         <div class="globe globe-1"></div>
         <div class="globe globe-2"></div>
         <div class="globe globe-3"></div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast-card hidden">
+        <i id="toast-icon" class="fa-solid fa-circle-check"></i>
+        <span id="toast-msg">Action completed successfully</span>
     </div>
 
     <div class="app-container">
@@ -124,7 +132,8 @@
                         </div>
                         <div class="action-btns">
                             <button class="btn-secondary" onclick="copyReport()"><i class="fa-regular fa-copy"></i> Copy</button>
-                            <button class="btn-secondary" onclick="downloadReport()"><i class="fa-solid fa-download"></i> Export Markdown</button>
+                            <button class="btn-secondary" onclick="downloadReport()"><i class="fa-solid fa-download"></i> Export MD</button>
+                            <button class="btn-secondary btn-pdf" onclick="exportPDF()"><i class="fa-solid fa-file-pdf"></i> Export PDF</button>
                         </div>
                     </div>
 

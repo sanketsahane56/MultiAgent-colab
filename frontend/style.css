@@ -714,3 +714,42 @@ body {
     }
 }
 
+/* Toast Notifications */
+.toast-card {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    padding: 12px 20px;
+    border-radius: 10px;
+    background: rgba(18, 26, 47, 0.95);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    color: #fff;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    opacity: 0;
+    transform: translateY(-20px) scale(0.9);
+}
+
+.toast-card.show {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.btn-pdf {
+    background: rgba(244, 63, 94, 0.15) !important;
+    border-color: rgba(244, 63, 94, 0.3) !important;
+    color: #fda4af !important;
+}
+
+.btn-pdf:hover {
+    background: rgba(244, 63, 94, 0.3) !important;
+    color: #fff !important;
+}
+
+
