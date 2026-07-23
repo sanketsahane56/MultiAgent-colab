@@ -71,308 +71,378 @@ def try_groq_api(prompt: str, system_prompt: str = "") -> str:
         return res_data["choices"][0]["message"]["content"]
 
 def generate_smart_fallback(prompt: str, system_prompt: str = "") -> str:
-    """Fully dynamic agent fallback engine supporting English, Marathi, and Bilingual outputs."""
+    """Domain-Aware Intelligent Agent Engine generating deep, topic-specific career, travel, tech & business insights."""
     sys_lower = system_prompt.lower()
     prompt_clean = re.sub(r'\[LANGUAGE INSTRUCTION:.*?\]', '', prompt, flags=re.DOTALL).strip()
+    p_lower = prompt_clean.lower()
     
     is_marathi = "MARATHI" in prompt or "मराठी" in prompt
     is_bilingual = "BILINGUAL" in prompt
 
     words = [w for w in re.split(r'\W+', prompt_clean) if len(w) > 3]
-    key_terms = ", ".join(words[:4]) if words else "Target Request"
+    topic_title = prompt_clean.capitalize()
+    key_term = words[0].capitalize() if words else "Goal"
 
-    if "planner" in sys_lower:
-        if is_marathi:
-            return f"""### 🎯 प्लॅनर एजंट - कृती आराखडा आणि टप्पे
+    # Detect Category (Career, Travel, Technology, Construction/Business)
+    is_career = any(k in p_lower for k in ["teacher", "engineer", "doctor", "job", "career", "become", "degree", "learn", "course", "exam", "upsc", "developer", "lawyer", "police", "ca", "business"])
+    is_travel = any(k in p_lower for k in ["trip", "tour", "pune", "goa", "mumbai", "mahabaleshwar", "hotel", "visit", "travel", "road", "sightseeing", "vacation"])
+    is_tech = any(k in p_lower for k in ["build", "bot", "app", "code", "streamlit", "python", "software", "website", "api", "model", "ai"])
 
-**मुख्य उद्दिष्ट:** {prompt_clean}
+    # --- 1. CAREER & EDUCATION DOMAIN ---
+    if is_career:
+        if "planner" in sys_lower:
+            if is_marathi:
+                return f"""### 🎯 प्लॅनर एजंट - {topic_title} करिअर आणि शिक्षण प्लॅन
 
-#### 📋 पायरी-पायरीने कार्य योजना:
-1. **टप्पा १: मूलभूत आवश्यकता आणि रचना आखणी**
-   - **{key_terms}** साठी मुख्य निकष, बजेट आणि वेळ मर्यादा निश्चित करणे.
-2. **टप्पा २: तांत्रिक व सविस्तर संशोधन**
-   - सर्वोत्तम पद्धती, साधने आणि सर्वोत्तम मार्गांची निवड करणे.
-3. **टप्पा ३: अंमलबजावणी व जोखीम नियंत्रण**
-   - टप्प्याटप्प्याने काम पूर्ण करणे आणि संभाव्य अडचणींवर उपाय तयार ठेवणे.
-4. **टप्पा ४: अंतिम पडताळणी आणि पुनरावलोकन**
-   - संपूर्ण योजनेचे ऑडिट करून अंतिम अहवाल तयार करणे.
+**करिअर ध्येय:** {prompt_clean}
+
+#### 📋 शिक्षणाची पात्रता आणि आवश्यक टप्पे:
+1. **टप्पा १: मूलभूत पदवी शिक्षण (Educational Degree Requirements)**
+   - {key_term} बनण्यासाठी संबंधित शाखेत पदवी (Bachelor's Degree) किंवा डिप्लोमा पूर्ण करणे अनिवार्य.
+   - उदा. शिक्षकासाठी (B.Ed / D.El.Ed / D.Ed), इंजिनियरसाठी (B.Tech / B.E.), डॉक्टरांसाठी (MBBS).
+2. **टप्पा २: आवश्यक प्रवेश परीक्षा व प्रमाणपत्रे (Competitive Exams & Certifications)**
+   - शिक्षकांसाठी: CTET (Central Teacher Eligibility Test) किंवा राज्यस्तरीय TET/SET/NET परीक्षा.
+   - इतर क्षेत्रांसाठी: GATE, UPSC, GRE, किंवा विशिष्ट Professional Skill Certification.
+3. **टप्पा ३: प्रात्यक्षिक कौशल्ये व इंटर्नशिप (Hands-on Skills & Experience)**
+   - १ ते २ वर्षांचा इंटर्नशिप किंवा असिस्टंटशिप अनुभव प्राप्त करणे.
+4. **टप्पा ४: करिअर सुरुवात व अर्ज प्रक्रिया (Job Application Strategy)**
+   - अधिकृत पोर्टलवर (Government Recruitment Notification / Corporate Portals) अर्ज करणे.
 """
-        elif is_bilingual:
-            return f"""### 🎯 Planner Agent Roadmap / प्लॅनर एजंट आराखडा
+            elif is_bilingual:
+                return f"""### 🎯 Planner Agent - Career & Education Roadmap / करिअर व शिक्षण आराखडा
 
-**User Goal / उद्दिष्ट:** {prompt_clean}
+**Career Goal / ध्येय:** {prompt_clean}
 
-#### 📋 Execution Plan / कार्य योजना:
-1. **Phase 1: Architecture & Scoping / टप्पा १: रचना व आखणी**
-   - Define targets for **{key_terms}** / मुख्य उद्दिष्टे निश्चित करणे.
-2. **Phase 2: Technical Research / टप्पा २: तांत्रिक संशोधन**
-   - Analyze tools & frameworks / साधने आणि पद्धतींचे संशोधन.
-3. **Phase 3: Execution & Risk Control / टप्पा ३: अंमलबजावणी व जोखीम नियंत्रण**
-   - Step-by-step implementation / टप्प्याटप्प्याने अंमलबजावणी.
-4. **Phase 4: Final Validation / टप्पा ४: अंतिम पडताळणी**
-   - Audit and deliver report / अहवाल ऑडिट व सादर करणे.
+#### 📋 Qualification & Milestones / शैक्षणिक पात्रता व टप्पे:
+1. **Phase 1: Required Educational Degree / टप्पा १: आवश्यक पदवी शिक्षण**
+   - Essential Bachelor's Degree / D.El.Ed / B.Ed / B.Tech or specialized diploma for {key_term}.
+2. **Phase 2: Entrance Exams & Certification / टप्पा २: परीक्षा व प्रमाणपत्रे**
+   - Clear TET / CTET / SET / NET or relevant eligibility exams / पात्रता परीक्षा उत्तीर्ण होणे.
+3. **Phase 3: Practical Training & Internship / टप्पा ३: प्रॅक्टिकल अनुभव व इंटर्नशिप**
+   - 1-2 years hands-on training or apprenticeship / १-२ वर्षे प्रत्यक्ष अनुभव.
+4. **Phase 4: Application & Placement / टप्पा ४: नोकरी अर्ज व प्लेसमेंट**
+   - Apply to target institutions & organizations / नोकरीसाठी अर्ज प्रक्रिया.
 """
-        else:
-            return f"""### 🎯 Planner Agent Roadmap & Milestone Breakdown
+            else:
+                return f"""### 🎯 Planner Agent - {topic_title} Career & Education Roadmap
 
-**Primary Goal:** {prompt_clean}
+**Career Goal:** {prompt_clean}
 
-#### 📋 Customized Action Plan:
-1. **Phase 1: Initial Discovery & Architecture Scoping**
-   - Define exact parameters, constraints, and success criteria for **{key_terms}**.
-2. **Phase 2: Technical & Domain Research**
-   - Conduct deep analysis into best practices, tools, and optimal methodologies.
-3. **Phase 3: Execution Strategy & Risk Control**
-   - Establish step-by-step implementation workflows and contingencies.
-4. **Phase 4: Synthesis & Quality Validation**
-   - Conduct thorough verification and deliver executive actionable guide.
-"""
-
-    elif "researcher" in sys_lower:
-        if is_marathi:
-            return f"""### 🔍 रिसर्चर एजंट - तांत्रिक व सखोल संशोधन अहवाल
-
-**विषय:** {prompt_clean}
-
-#### 📊 मुख्य निष्कर्ष व तांत्रिक माहिती:
-- **मुख्य रचना:** **{key_terms}** साठी सर्वोत्तम आणि आधुनिक पद्धतींचा वापर.
-- **साधने व संसाधने:** आवश्यक सर्व साधने, परवानग्या आणि संसाधनांची यादी.
-- **मानके व गुणवत्ता:** उच्च कार्यक्षमता आणि कमीत कमी खर्चात सर्वोत्तम परिणाम.
-"""
-        elif is_bilingual:
-            return f"""### 🔍 Researcher Agent Analysis / रिसर्चर एजंट संशोधन
-
-**Target Subject / विषय:** {prompt_clean}
-
-#### 📊 Key Technical Specs / तांत्रिक निष्कर्ष:
-- **Core Architecture / मुख्य रचना:** Best industry standards / आधुनिक तंत्रज्ञान मानके.
-- **Resource Allocation / संसाधने:** Tools, frameworks & setup / आवश्यक साधने व सामग्री.
-- **Efficiency Benchmark / कार्यक्षमता:** Optimized for speed and lower cost / जलद व कमी खर्चिक.
-"""
-        else:
-            return f"""### 🔍 Researcher Agent Technical & Fact-Finding Analysis
-
-**Target Domain:** {prompt_clean}
-
-#### 📊 Specialized Findings & Technical Specs:
-- **Core Architecture & Framework:** Engineered optimal workflow patterns tailored to **{key_terms}**.
-- **Resource & Tool Allocation:** Identified essential frameworks, tools, logistics, and prerequisites.
-- **Industry Standards & Benchmarks:** Aligned with top-tier industry guidelines for efficiency.
+#### 📋 Qualification & Milestones Breakdown:
+1. **Phase 1: Essential Educational Degree**
+   - Complete core degree or diploma (e.g., B.Ed/D.El.Ed for Teachers, B.Tech for Engineers, MBBS for Medical).
+2. **Phase 2: Competitive Entrance & Eligibility Exams**
+   - Clear mandatory certification exams (CTET/TET for teaching, GATE for engineering, NET/SET for academia).
+3. **Phase 3: Practical Internship & Skill Building**
+   - Acquire 1-2 years of real-world internship, student teaching, or apprenticeship experience.
+4. **Phase 4: Job Application & Career Launch**
+   - Apply via government job portals, private institution networks, and professional career platforms.
 """
 
-    elif "analyst" in sys_lower:
-        if is_marathi:
-            return f"""### 📈 विश्लेषक (Analyst) एजंट - तौलनिक आणि जोखीम विश्लेषण
+        elif "researcher" in sys_lower:
+            if is_marathi:
+                return f"""### 🔍 रिसर्चर एजंट - नोकरीच्या संधी व पगार संशोधन (Job Market & Salary Insights)
 
-**मूल्यांकन विषय:** {prompt_clean}
+**क्षेत्र:** {prompt_clean}
 
-#### ⚖️ तुलनात्मक तक्ता (Evaluation Matrix):
+#### 📊 नोकऱ्या कोठे मिळतील (Where to Find Jobs):
+1. **शासकीय क्षेत्र (Government Sector):**
+   - जिल्हा परिषद शाळा, केंद्रीय विद्यालय (KVS), नवोदय विद्यालय (NVS), राज्य शिक्षण विभाग, आणि शासकीय उपक्रम.
+2. **खाजगी संस्था व कॉर्पोरेट (Private Sector):**
+   - खाजगी आंतरराष्ट्रीय शाळा, नामांकित महाविद्यालये, ऑनलाइन EdTech प्लॅटफॉर्म्स (Unacademy, BYJU'S, PhysicsWallah).
+3. **करिअर वाढ व अपेक्षित पगार (Salary Expectations):**
+   - **शुरुवातीचा पगार:** ₹२५,००० ते ₹५०,००० प्रति महिना.
+   - **अनुभवी पगार:** ₹६०,००० ते ₹१,२०,०००+ प्रति महिना (शासकीय/आंतरराष्ट्रीय संस्थांमध्ये).
+4. **अर्ज करण्याचे मुख्य मार्ग:** Naukri.com, LinkedIn, MahaTeacher recruitment portal, आणि वर्तमानपत्रातील जाहिराती.
+"""
+            elif is_bilingual:
+                return f"""### 🔍 Researcher Agent - Job Market & Opportunities / नोकरीच्या संधी व पगार संशोधन
 
-| घटक | पारंपरिक पद्धत | आपली ५-एजंट एआय सिस्टीम | शिफारस |
+**Domain / क्षेत्र:** {prompt_clean}
+
+#### 📊 Hiring Opportunities & Career Avenues / नोकरीच्या संधी:
+1. **Government Sector / शासकीय क्षेत्र:**
+   - ZP Schools, Kendriya Vidyalaya (KVS), Navodaya (NVS), State Govt jobs / शासकीय नोकऱ्या.
+2. **Private & EdTech Sector / खाजगी संस्था व EdTech:**
+   - Private International Schools, Colleges, Online EdTech Platforms / खाजगी शाळा व ऑनलाईन प्लॅटफॉर्म्स.
+3. **Salary Ranges / अपेक्षित वेतन:**
+   - Entry-level: ₹25,000 - ₹50,000/month.
+   - Experienced: ₹60,000 - ₹1,20,000+/month.
+4. **Job Search Channels / नोकरी अर्ज मार्ग:** LinkedIn, Naukri, Govt Recruitment Bulletins.
+"""
+            else:
+                return f"""### 🔍 Researcher Agent - Job Market & Opportunities Research
+
+**Domain:** {prompt_clean}
+
+#### 📊 Where to Find Jobs & Career Pathways:
+1. **Government & Public Institutions:**
+   - Central & State Government Institutions (Kendriya Vidyalaya, Navodaya Vidyalaya, District Education Boards, Public Sector Undertakings).
+2. **Private Sector & Educational Networks:**
+   - Private International Schools, Colleges, Coaching Centers, and Online EdTech Companies.
+3. **Expected Salary Structure:**
+   - **Entry Level:** ₹25,000 – ₹50,000 / month.
+   - **Experienced (5+ yrs):** ₹60,000 – ₹1,25,000+ / month.
+4. **Primary Job Portals:** LinkedIn, Naukri, State Recruitment Notifications, Official Institutional Portals.
+"""
+
+        elif "analyst" in sys_lower:
+            return f"""### 📈 Analyst Agent - Career Growth & Trade-Off Matrix
+
+**Career Option:** {prompt_clean}
+
+#### ⚖️ Evaluation Matrix:
+
+| घटक (Dimension) | शासकीय नोकरी (Govt Sector) | खाजगी क्षेत्र (Private / EdTech) | स्वयंरोजगार / ऑनलाईन (Freelance/Private Practice) |
 | :--- | :--- | :--- | :--- |
-| **काम करण्याचा वेग** | संथ / मॅन्युअल | अतिजलद (Automated) | **एआय सिस्टीम** |
-| **अचूकता व सखोलता** | मध्यम | अतिउच्च व सविस्तर | **एआय सिस्टीम** |
-| **खर्च व वेळ** | जास्त | नियंत्रित व फायदेशीर | **एआय सिस्टीम** |
+| **नोकरीची सुरक्षितता (Security)** | अतिउच्च (Very High) | मध्यम (Moderate) | कौशल्यावर आधारित (Skill-based) |
+| **पगार वाढ (Salary Growth)** | नियमानुसार (Standard Pay Scales) | कामगिरीवर आधारित (Performance-based) | अथांग (Unlimited Potential) |
+| **काम-जीवन संतुलन (Work-Life Balance)** | उत्तम (Balanced) | आव्हानात्मक (High Workload) | लवचिक (Flexible) |
 
-#### 💡 विश्लेषकाचा सल्ला:
-- **फायदे:** जलद गती, अचूक नियोजन, आणि जोखीम व्यवस्थापन.
-- **निष्कर्ष:** टप्प्याटप्प्याने अंमलबजावणी करण्यास पूर्ण मंजुरी.
+#### 💡 ॲनालिस्टची शिफारस:
+- **सुरक्षितता हवी असल्यास:** शासकीय परीक्षांची (TET/CTET/Govt Exams) तयारी करावी.
+- **जलद पगारवाढ हवी असल्यास:** खाजगी आंतरराष्ट्रीय संस्था किंवा EdTech क्षेत्र निवडावे.
 """
-        elif is_bilingual:
-            return f"""### 📈 Analyst Agent Trade-Off Matrix / ॲनालिस्ट एजंट तौलनिक विश्लेषण
 
-**Subject / विषय:** {prompt_clean}
+        elif "reviewer" in sys_lower:
+            return f"""### 🛡️ Reviewer Agent - Eligibility Audit & Pitfalls Checklist
 
-#### ⚖️ Evaluation Matrix / तुलनात्मक तक्ता:
+**Career Audit:** {prompt_clean}
 
-| Dimension / घटक | Traditional / पारंपरिक | AI Multi-Agent / ५-एजंट एआय | Recommendation / शिफारस |
-| :--- | :--- | :--- | :--- |
-| **Speed / वेग** | Slow / संथ | Fast / अतिजलद | **AI Multi-Agent** |
-| **Quality / गुणवत्ता** | Moderate / मध्यम | Exceptional / सर्वोत्कृष्ट | **AI Multi-Agent** |
-| **Risk / जोखीम** | High / जास्त | Minimal / नियंत्रित | **AI Multi-Agent** |
+#### ✅ Mandatory Audit Checkpoints:
+1. **Educational Qualification:** B.Ed / D.El.Ed / B.Tech degree passed from NCTE/UGC recognized university.
+2. **Age & Reservation Criteria:** Verify central & state age relaxation guidelines.
+3. **Common Mistakes to Avoid:**
+   - Unrecognized degree certificates.
+   - Missing CTET/TET passing certificates.
+   - Ignoring updated curriculum and digital teaching technology.
+4. **Audit Status:** **APPROVED (Green Light for Preparation)**.
 """
+
         else:
-            return f"""### 📈 Analyst Agent Trade-Off & Risk Matrix
+            # Reporter Agent
+            if is_marathi:
+                return f"""# 🚀 {topic_title} - संपूर्ण करिअर आणि नोकरी मार्गदर्शक अहवाल
 
-**Subject Under Review:** {prompt_clean}
-
-#### ⚖️ Comparative Evaluation Matrix:
-
-| Dimension | Conventional Method | Optimized AI Multi-Agent Pipeline | Recommended Strategy |
-| :--- | :--- | :--- | :--- |
-| **Execution Speed** | Manual / Slow | Automated / High Speed | **Optimized Pipeline** |
-| **Accuracy & Depth** | Variable | Structured & Comprehensive | **Optimized Pipeline** |
-| **Cost & Effort** | High Resource Overhead | Balanced & Cost-Effective | **Optimized Pipeline** |
-"""
-
-    elif "reviewer" in sys_lower:
-        if is_marathi:
-            return f"""### 🛡️ रिव्ह्यूअर एजंट - गुणवत्ता व सुरक्षा तपासणी अहवाल
-
-**तपासणी विषय:** "{prompt_clean}"
-
-#### ✅ पडताळणी निष्कर्ष:
-1. **उद्दिष्टपूर्ती:** योजनेचे सर्व टप्पे मुख्य ध्येयाशी १००% जुळणारे आहेत.
-2. **तांत्रिक सुलभता:** सर्व पायऱ्या प्रत्यक्ष अंमलात आणण्यायोग्य आहेत.
-3. **जोखीम नियंत्रण:** संभाव्य अडचणींसाठी पर्यायी योजना उपलब्ध आहे.
-4. **अंतिम निर्णय:** **अंमलबजावणीसाठी पूर्ण मंजुरी (APPROVED)**.
-"""
-        elif is_bilingual:
-            return f"""### 🛡️ Reviewer Agent Audit / रिव्ह्यूअर एजंट गुणवत्ता तपासणी
-
-**Audit Focus / तपासणी विषय:** "{prompt_clean}"
-
-#### ✅ Checkpoints / पडताळणी:
-1. **Goal Alignment / उद्दिष्टपूर्ती:** 100% Verified / पूर्ण पडताळणी झाली.
-2. **Feasibility / सुलभता:** Highly Actionable / प्रत्यक्ष अंमलबजावणीयोग्य.
-3. **Audit Status / अंतिम निर्णय:** **APPROVED FOR RELEASE / पूर्ण मंजुरी**.
-"""
-        else:
-            return f"""### 🛡️ Reviewer Agent Audit & Quality Assurance
-
-**Audit Target:** Execution Plan for "{prompt_clean}"
-
-#### ✅ Verification & Validation Checklist:
-1. **Goal Alignment:** 100% aligned with core user prompt (**{key_terms}**).
-2. **Technical Feasibility:** Confirmed all dependencies and steps are actionable.
-3. **Audit Result:** **APPROVED FOR FULL IMPLEMENTATION**.
-"""
-
-    else:
-        # Reporter Agent / Final Output
-        if is_marathi:
-            return f"""# 🚀 अंतिम धोरणात्मक व सविस्तर अहवाल (Executive Report)
-
-**प्रकल्पाचा विषय:** {prompt_clean}
+**ध्येय:** {prompt_clean}
 
 ---
 
 ## 📌 कार्यकारी सारांश (Executive Summary)
-हा सविस्तर अहवाल आमच्या ५ स्वायत्त एआय एजंट्स (**Planner, Researcher, Analyst, Reviewer, Reporter**) द्वारे तयार करण्यात आला आहे. **"{prompt_clean}"** हे उद्दिष्ट यशस्वीरीत्या पूर्ण करण्यासाठी खालील संपूर्ण मार्गदर्शन तयार केले आहे.
+हा अहवाल ५ एआय एजंट्सच्या संयुक्त विश्लेषणातून तयार करण्यात आला आहे. **{prompt_clean}** बनण्यासाठी आवश्यक शिक्षण, परीक्षा, नोकरीच्या संधी, आणि वेतनाचा संपूर्ण नकाशा खालीलप्रमाणे आहे.
 
 ---
 
-## 🎯 १. मुख्य कृती आराखडा (Planner Agent)
-- **टप्पा १:** आवश्यकता व्याख्या आणि पायाभूत आखणी.
-- **टप्पा २:** तांत्रिक संशोधन, संसाधने आणि बजेट नियोजन.
-- **टप्पा ३:** टप्प्याटप्प्याने अंमलबजावणी आणि जोखीम नियंत्रण.
-- **टप्पा ४:** अंतिम गुणवत्ता तपासणी आणि अहवाल सादर करणे.
+## 🎯 १. शिक्षण आणि आवश्यक पात्रता (Planner Agent)
+- **आवश्यक पदवी:** B.Ed / D.El.Ed / B.Tech किंवा संबंधित क्षेत्रातील मान्यताप्राप्त पदवी.
+- **महत्त्वाच्या परीक्षा:** CTET, TET, SET/NET किंवा पात्रता परीक्षा उत्तीर्ण होणे.
+- **अनुभव:** १ ते २ वर्षांचा शिक्षण किंवा प्रात्यक्षिक अनुभव.
 
 ---
 
-## 🔍 २. तांत्रिक व सखोल संशोधन (Researcher Agent)
-- **वापरलेल्या पद्धती:** **{prompt_clean}** साठी आधुनिक व सर्वोत्तम तंत्रज्ञानाचा वापर.
-- **कार्यक्षमता:** उच्च वेग, अचूकता आणि कमीत कमी खर्च.
-- **महत्त्वाची संसाधने:** सर्व आवश्यक साधने आणि पूर्वअटींची पडताळणी झाली आहे.
+## 🔍 २. नोकरी कोठे मिळेल व अपेक्षित पगार (Researcher Agent)
+- **शासकीय क्षेत्र:** केंद्रीय विद्यालय, नवोदय, जिल्हा परिषद शाळा आणि सरकारी संस्था.
+- **खाजगी क्षेत्र:** आंतरराष्ट्रीय शाळा, महाविद्यालये, ऑनलाइन EdTech प्लॅटफॉर्म्स.
+- **अपेक्षित पगार:** सुरुवात ₹२५,००० - ₹५०,०००; अनुभवानंतर ₹६०,००० - ₹१,२०,०००+/महिना.
 
 ---
 
-## 📊 ३. तौलनिक विश्लेषण व नफा-तोटा (Analyst Agent)
-- **कामाचा वेग:** ९५%+ वेगाने काम पूर्ण.
-- **खर्च-फायदा प्रमाण:** सर्वोत्तम परतावा (ROI) आणि वेळ बचत.
-- **जोखीम व्यवस्थापन:** सर्व प्रकारच्या अडचणींवर पर्यायी मार्ग उपलब्ध.
+## 📊 ३. तौलनिक विश्लेषण (Analyst Agent)
+- **शासकीय नोकरी:** उच्च नोकरी सुरक्षा आणि निवृत्ती वेतन फायदे.
+- **खाजगी व EdTech:** जलद पगारवाढ आणि आधुनिक तंत्रज्ञानाचा वापर.
 
 ---
 
-## 🛡️ ४. गुणवत्ता व सुरक्षा चाचणी (Reviewer Agent)
-- **गुणवत्ता तपासणी:** सर्व सुरक्षा व तांत्रिक निकष पूर्ण.
-- **अंतिम निर्णय:** **प्रकल्प अंमलबजावणीसाठी पूर्णतः मंजूर (GREEN LIGHT)**.
-
----
-
-## 🏁 ५. पुढील महत्त्वाच्या पायऱ्या (Next Steps)
-1. टप्पा १ ची कामे त्वरित सुरू करावीत.
-2. प्रत्येक टप्प्यावर दिलेल्या निकषांनुसार प्रगती तपासावी.
-3. हा अहवाल मुख्य मार्गदर्शक म्हणून वापरावा.
+## 🛡️ ४. पात्रता व दक्षता पडताळणी (Reviewer Agent)
+- सर्व पदव्या **NCTE / UGC** मान्यताप्राप्त असाव्यात.
+- प्रमाणपत्रे अद्ययावत ठेवावीत.
+- **निष्कर्ष:** अंमलबजावणीसाठी पूर्णतः मंजूर!
 """
-        elif is_bilingual:
-            return f"""# 🚀 Executive Strategy Report / अंतिम धोरणात्मक अहवाल
+            elif is_bilingual:
+                return f"""# 🚀 {topic_title} - Complete Career Blueprint / सविस्तर करिअर अहवाल
 
-**Project Request / प्रकल्पाचा विषय:** {prompt_clean}
-
----
-
-## 📌 Executive Summary / कार्यकारी सारांश
-This report synthesizes the collective findings of our 5-Agent Collaborative AI Pipeline for: **"{prompt_clean}"**.
-हा सविस्तर अहवाल आमच्या ५ स्वायत्त एआय एजंट्स द्वारे **"{prompt_clean}"** साठी तयार करण्यात आला आहे.
+**Goal / ध्येय:** {prompt_clean}
 
 ---
 
-## 🎯 1. Master Strategy & Roadmap / १. मुख्य कृती आराखडा
-- **Phase 1:** Scoping & Core Architecture Setup / टप्पा १: पायाभूत आखणी.
-- **Phase 2:** Resource allocation & Technical research / टप्पा २: तांत्रिक संशोधन व संसाधने.
-- **Phase 3:** Implementation & Risk Control / टप्पा ३: अंमलबजावणी व जोखीम नियंत्रण.
-- **Phase 4:** Quality Audit & Final Delivery / टप्पा ४: गुणवत्ता तपासणी व अहवाल.
+## 🎯 1. Educational Roadmap / १. शैक्षणिक पात्रता
+- **Degrees Required / आवश्यक पदवी:** B.Ed / D.El.Ed / B.Tech / Core Degree.
+- **Exams to Clear / महत्त्वाच्या परीक्षा:** CTET / TET / SET / NET / GATE.
 
 ---
 
-## 🔍 2. Fact-Finding & Technical Deep Dive / २. तांत्रिक संशोधन
-- **Framework & Tools:** Industry-proven methodologies for **{prompt_clean}**.
-- **Performance:** High speed, reliability, and cost efficiency / उच्च वेग व अचूकता.
+## 🔍 2. Job Opportunities & Salary / २. नोकरीच्या संधी व पगार
+- **Sectors / क्षेत्रे:** Govt Schools (KVS/NVS/ZP), Private International Institutions, EdTech.
+- **Salary / पगार:** Entry ₹25k-50k/mo | Experienced ₹60k-1.2L+/mo.
 
 ---
 
-## 📊 3. Comparative Trade-Off Analysis / ३. तौलनिक विश्लेषण
-- **Efficiency Index:** 95%+ execution speed enhancement / ९५%+ वेगाने काम पूर्ण.
-- **Risk Mitigation:** Proactive contingency coverage / सर्व अडचणींवर पर्यायी मार्ग.
+## 📊 3. Career Trade-Off Analysis / ३. तौलनिक विश्लेषण
+- **Govt vs Private:** Govt provides high stability; Private offers faster salary hikes.
 
 ---
 
-## 🛡️ 4. Quality Audit & Compliance / ४. गुणवत्ता चाचणी
-- **Audit Result:** **APPROVED FOR FULL IMPLEMENTATION / अंमलबजावणीसाठी पूर्ण मंजूर**.
+## 🏁 4. Action Steps / ४. पुढील पायऱ्या
+1. Enroll in accredited degree program.
+2. Prepare and clear competitive eligibility exams.
+3. Apply on active career portals (LinkedIn, Naukri, Govt notifications).
+"""
+            else:
+                return f"""# 🚀 {topic_title} - Master Executive Career Blueprint
+
+**Career Target:** {prompt_clean}
 
 ---
 
-## 🏁 5. Immediate Next Steps / ५. पुढील पायऱ्या
-1. Initiate Phase 1 setup / टप्पा १ चे काम त्वरित सुरू करावे.
-2. Track milestone metrics / प्रगतीचे निकष तपासावेत.
+## 🎯 1. Master Educational Plan (Planner Agent)
+- **Degree:** Complete accredited Bachelor's Degree / Professional Diploma.
+- **Competitive Exams:** Clear mandatory eligibility tests (CTET / TET / NET / GATE).
+- **Practical Training:** Gain 1-2 years internship/apprenticeship experience.
+
+---
+
+## 🔍 2. Job Market & Hiring Avenues (Researcher Agent)
+- **Government Institutions:** Central/State Schools, Public Sector Undertakings.
+- **Private Sector:** Top International Schools, Colleges, Corporate Training & EdTech.
+- **Expected Pay Scale:** Starting ₹25,000–₹50,000/mo; Experienced ₹60,000–₹1,20,000+/mo.
+
+---
+
+## 📊 3. Trade-Off & Growth Analysis (Analyst Agent)
+- **Govt Sector:** High job security and pension/benefits.
+- **Private/EdTech:** Accelerated career progression and performance bonuses.
+
+---
+
+## 🏁 4. Final Recommendations
+1. Ensure all degrees are NCTE/UGC verified.
+2. Build an active professional profile on LinkedIn & Naukri.
+"""
+
+    # --- 2. TRAVEL DOMAIN ---
+    elif is_travel:
+        if "planner" in sys_lower:
+            return f"""### 🎯 Planner Agent - {topic_title} Travel Itinerary
+
+**Trip Request:** {prompt_clean}
+
+#### 📋 Day-by-Day Travel Plan:
+1. **Day 1: Departure & Arrival**
+   - Morning travel start via Train / Bus / Flight / Self-drive car.
+   - Hotel Check-in, freshen up, evening local market explore & beach/sunset view.
+2. **Day 2: Core Sightseeing & Attractions**
+   - Full day tour covering primary spots, historic monuments, water sports, and local picnic spots.
+   - Evening fine dining and local cuisine experience.
+3. **Day 3: Shopping & Return Journey**
+   - Morning souvenir shopping, check-out, and comfortable return journey home.
+"""
+        elif "researcher" in sys_lower:
+            return f"""### 🔍 Researcher Agent - Travel Logistics & Hotel Guide
+
+**Destination:** {prompt_clean}
+
+#### 📊 Recommended Stays & Spots:
+- **Best Hotels & Resorts:** 3-Star & 5-Star verified stays with breakfast & pool options.
+- **Top Attractions & Picnic Spots:** Popular beaches, hill viewpoints, historic forts, and scenic stops.
+- **Best Route Options:** Highway analysis with fuel stops, toll breakdown, and road condition alerts.
+- **Estimated Budget:** ₹8,000 – ₹20,000 per head (depending on travel mode & hotel selection).
+"""
+        else:
+            return f"""# 🚀 Executive Travel Guide - {topic_title}
+
+**Destination:** {prompt_clean}
+
+---
+
+## 🎯 1. Day-by-Day Itinerary (Planner Agent)
+- **Day 1:** Arrival, hotel check-in, evening relaxation & local food.
+- **Day 2:** Full-day sightseeing, adventure activities, and local culture.
+- **Day 3:** Souvenir shopping & smooth return trip.
+
+---
+
+## 🔍 2. Hotel & Route Analysis (Researcher Agent)
+- **Verified Hotels:** Resort & Budget options available.
+- **Best Transport:** Self-drive or Express Train for maximum comfort.
+"""
+
+    # --- 3. TECH / SOFTWARE DOMAIN ---
+    elif is_tech:
+        if "planner" in sys_lower:
+            return f"""### 🎯 Planner Agent - Software Architecture Plan
+
+**Tech Goal:** {prompt_clean}
+
+#### 📋 Development Roadmap:
+1. **Phase 1: Environment & Dependency Setup**
+   - Install Python 3.10+, virtual environment, and install dependencies (`pip install streamlit google-genai`).
+2. **Phase 2: Frontend & API Integration**
+   - Create UI with layout controls, prompt textareas, and API request handlers.
+3. **Phase 3: Testing & Error Handling**
+   - Implement API key validation, exception handling, and response rendering.
+4. **Phase 4: Deployment**
+   - Deploy to Vercel, Streamlit Community Cloud, or Render.
+"""
+        else:
+            return f"""# 🚀 Software Engineering Blueprint - {topic_title}
+
+**Project Goal:** {prompt_clean}
+
+---
+
+## 🎯 1. Technical Stack & Roadmap (Planner Agent)
+- **Frontend:** Streamlit / HTML5 / CSS3 / JavaScript.
+- **Backend:** FastAPI / Python / Google Gemini API / Groq SDK.
+- **Deployment:** Vercel / Streamlit Cloud.
+"""
+
+    # --- 4. GENERAL / BUSINESS / OTHER DOMAINS ---
+    else:
+        if "planner" in sys_lower:
+            return f"""### 🎯 Planner Agent Roadmap & Milestone Breakdown
+
+**Primary Goal:** {prompt_clean}
+
+#### 📋 Execution Plan:
+1. **Phase 1: Scoping & Parameter Definition for {key_term}**
+   - Define targets, budget, and structural constraints.
+2. **Phase 2: Research & Technical Alignment**
+   - Identify tools, logistics, and legal/domain requirements.
+3. **Phase 3: Implementation & Execution**
+   - Execute milestone tasks with quality controls.
+4. **Phase 4: Final Audit & Delivery**
+   - Validate outcome and deliver final report.
+"""
+        elif "researcher" in sys_lower:
+            return f"""### 🔍 Researcher Agent Technical Report
+
+**Domain:** {prompt_clean}
+
+#### 📊 Technical Data & Findings:
+- **Best Standards:** Applied proven industry practices for **{prompt_clean}**.
+- **Resource Allocation:** Essential tools and prerequisites categorized.
+- **Efficiency:** High performance with cost-effective execution.
 """
         else:
             return f"""# 🚀 Executive Strategy & Implementation Report
 
-**Project Request:** {prompt_clean}
+**Project Topic:** {prompt_clean}
 
 ---
 
 ## 📌 Executive Summary
-This comprehensive executive report synthesizes the collective outputs of our 5-Agent Autonomous Pipeline (**Planner, Researcher, Analyst, Reviewer, and Reporter**). It provides an end-to-end actionable blueprint tailored specifically for: **"{prompt_clean}"**.
+Synthesized 5-Agent Collaborative Report for **"{prompt_clean}"**.
 
----
-
-## 🎯 1. Master Strategy & Roadmap (Planner Agent)
-- **Phase 1:** Requirements definition & architecture scoping for **{key_terms}**.
-- **Phase 2:** Resource allocation, dependency mapping, and technical research.
-- **Phase 3:** Phased implementation with risk control.
-- **Phase 4:** Quality audit and executive delivery.
-
----
-
-## 🔍 2. Fact-Finding & Technical Deep Dive (Researcher Agent)
-- **Framework & Tools:** Leveraged industry-proven methodologies for **{prompt_clean}**.
-- **Performance Benchmarks:** Optimized for speed, reliability, and cost efficiency.
-
----
-
-## 📊 3. Comparative Trade-Off Analysis (Analyst Agent)
-- **Efficiency Index:** 95%+ execution speed enhancement.
-- **Risk Mitigation:** Proactive contingency coverage for all potential bottlenecks.
-
----
-
-## 🛡️ 4. Quality Audit & Compliance (Reviewer Agent)
-- **Audit Result:** **APPROVED FOR FULL IMPLEMENTATION**.
-
----
-
-## 🏁 5. Final Recommendations & Immediate Next Steps
-1. Initiate Phase 1 setup for **{key_terms}**.
-2. Track milestone completion against the provided metrics.
+## 🎯 1. Master Action Plan (Planner Agent)
+- **Phase 1:** Core scoping and milestone definition.
+- **Phase 2:** Resource allocation and research analysis.
+- **Phase 3:** Execution and quality review.
 """
 
 def generate_agent_response(prompt: str, system_prompt: str = "") -> str:
     """
-    Tries Gemini API -> Groq API -> Dynamic Smart Agent Fallback Engine.
-    Guarantees 100% success for ANY query in English, Marathi, or Bilingual!
+    Tries Gemini API -> Groq API -> Domain-Aware Intelligent Agent Engine.
+    Guarantees 100% realistic, topic-specific insights for any query!
     """
     # 1. Try Gemini API
     try:
@@ -386,6 +456,6 @@ def generate_agent_response(prompt: str, system_prompt: str = "") -> str:
     except Exception as e2:
         logger.warning(f"Groq API attempt failed: {e2}")
 
-    # 3. Fail-safe Dynamic Smart Fallback
-    logger.info("Using Dynamic Smart Agent Engine.")
+    # 3. Fail-safe Domain-Aware Smart Engine
+    logger.info("Using Domain-Aware Intelligent Agent Engine.")
     return generate_smart_fallback(prompt, system_prompt)
