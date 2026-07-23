@@ -99,16 +99,18 @@ def generate_smart_fallback(prompt: str, system_prompt: str = "") -> str:
         is_goa = "goa" in p_lower
         is_mahabaleshwar = "mahabaleshwar" in p_lower or "panchgani" in p_lower
 
-        # Extract Map Query
+        # Extract Origin & Destination for Map Directions Polyline (Dark Blue Route Line)
         if "to" in p_lower:
             parts = re.split(r'\bto\b', prompt_clean, flags=re.IGNORECASE)
-            map_query = f"{parts[0].strip()} to {parts[1].strip()}"
+            origin_loc = parts[0].lower().replace("plan", "").replace("trip", "").replace("from", "").replace("user", "").replace("request", "").strip().capitalize() or "Pune"
+            dest_loc = parts[1].lower().replace("trip", "").replace("plan", "").strip().capitalize()
         else:
-            map_query = prompt_clean
+            origin_loc = "Pune"
+            dest_loc = prompt_clean.lower().replace("plan", "").replace("trip", "").strip().capitalize()
 
-        # Interactive Google Maps Embed
-        map_embed_html = f"""<div class="map-embed-container" style="margin: 20px 0; border-radius: 14px; overflow: hidden; border: 1px solid rgba(99, 102, 241, 0.4); box-shadow: 0 8px 25px rgba(0,0,0,0.4);">
-    <iframe width="100%" height="360" frameborder="0" style="border:0;" src="https://maps.google.com/maps?q={map_query.replace(' ', '+')}&output=embed" allowfullscreen></iframe>
+        # Google Maps Directions Embed showing Dark Blue Polyline Route Line
+        map_embed_html = f"""<div class="map-embed-container" style="margin: 20px 0; border-radius: 14px; overflow: hidden; border: 2px solid rgba(99, 102, 241, 0.5); box-shadow: 0 8px 25px rgba(0,0,0,0.4);">
+    <iframe width="100%" height="380" frameborder="0" style="border:0;" src="https://maps.google.com/maps?saddr={origin_loc.replace(' ', '+')}&daddr={dest_loc.replace(' ', '+')}&output=embed" allowfullscreen></iframe>
 </div>"""
 
         if is_nashik_pune:
