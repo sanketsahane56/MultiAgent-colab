@@ -29,9 +29,9 @@ def generate_agent_response(prompt: str, system_prompt: str = "") -> str:
     contents = f"{system_prompt}\n\n{prompt}".strip() if system_prompt else prompt
     client = get_gemini_client()
     
-    last_error = None
+    collected_errors = []
     for model_name in MODEL_PRIORITY:
-        for attempt in range(1, 4):  # Try up to 3 times per model
+        for attempt in range(1, 3):  # Try up to 2 times per model
             try:
                 response = client.models.generate_content(
                     model=model_name,
@@ -40,9 +40,9 @@ def generate_agent_response(prompt: str, system_prompt: str = "") -> str:
                 if response and response.text:
                     return response.text
             except Exception as e:
-                last_error = e
                 err_str = str(e)
-                logger.warning(f"Attempt {attempt} failed for {model_name}: {err_str[:100]}")
+                logger.warning(f"Attempt {attempt} failed for {model_name}: {err_str[:150]}")
+                collected_errors.append(f"[{model_name} attempt {attempt}]: {err_str[:150]}")
                 
                 # If invalid key / unauthenticated, fail early with clear guidance
                 if "401" in err_str or "UNAUTHENTICATED" in err_str:
@@ -57,9 +57,9 @@ def generate_agent_response(prompt: str, system_prompt: str = "") -> str:
                     time.sleep(attempt * 2)
                     continue
                 else:
-                    # 404 or other permanent model error -> try next model
+                    # Permanent error for this model -> break inner loop to try next model
                     break
             
-    raise RuntimeError(f"All Gemini models failed. Last error: {last_error}")
+    raise RuntimeError(f"All Gemini models failed. Errors: {'; '.join(collected_errors)}")
 
 
