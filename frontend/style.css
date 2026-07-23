@@ -794,46 +794,39 @@ body {
     box-shadow: 0 0 12px rgba(99, 102, 241, 0.4);
 }
 
-/* Header Right & SS Developer Emblem */
+/* Header Right & SS Master Emblem Logo */
 .header-right {
     display: flex;
     align-items: center;
     gap: 16px;
 }
 
-.ss-developer-badge {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(99, 102, 241, 0.12);
-    border: 1px solid rgba(99, 102, 241, 0.3);
-    padding: 6px 14px;
-    border-radius: 20px;
-    box-shadow: 0 0 12px rgba(99, 102, 241, 0.2);
-}
-
-.ss-symbol {
-    width: 26px;
-    height: 26px;
-    background: linear-gradient(135deg, #ec4899, #8b5cf6);
-    color: #ffffff;
-    font-size: 12px;
-    font-weight: 800;
-    font-family: var(--font-heading);
-    border-radius: 50%;
+.ss-master-emblem {
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(135deg, #6366f1, #ec4899, #8b5cf6);
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 0 8px rgba(236, 72, 153, 0.6);
+    box-shadow: 0 0 16px rgba(99, 102, 241, 0.5), inset 0 0 8px rgba(255, 255, 255, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.ss-dev-text {
-    font-size: 13px;
-    color: #cbd5e1;
+.ss-master-emblem:hover {
+    transform: scale(1.08) rotate(3deg);
+    box-shadow: 0 0 22px rgba(236, 72, 153, 0.7);
 }
 
-.ss-dev-text strong {
-    color: #a5b4fc;
+.ss-master-text {
+    font-size: 20px;
+    font-weight: 900;
+    font-family: var(--font-heading);
+    color: #ffffff;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
 /* Enhanced 5 Agent Step Cards */
@@ -892,6 +885,55 @@ body {
     margin: 0;
 }
 
+/* Live Telemetry Bar Filling Space Under 5 Agent Step Cards */
+.telemetry-card {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 14px;
+    padding: 12px;
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: var(--radius-md);
+    backdrop-filter: blur(8px);
+}
+
+.telemetry-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 8px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.telemetry-item i {
+    font-size: 16px;
+}
+
+.text-amber { color: #f59e0b; }
+.text-indigo { color: #818cf8; }
+.text-emerald { color: #10b981; }
+
+.telemetry-data {
+    display: flex;
+    flex-direction: column;
+}
+
+.telemetry-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.telemetry-val {
+    font-size: 12px;
+    font-weight: 600;
+    color: #f8fafc;
+}
+
 /* PDF Export High Contrast Styling & Watermark */
 .pdf-export-wrapper {
     width: 100%;
@@ -905,15 +947,15 @@ body {
     overflow: hidden;
 }
 
-.pdf-watermark {
+.pdf-watermark-overlay {
     position: absolute;
-    top: 50%;
+    top: 35%;
     left: 50%;
     transform: translate(-50%, -50%) rotate(-35deg);
-    font-size: 42px;
+    font-size: 38px;
     font-weight: 900;
     font-family: 'Outfit', sans-serif;
-    color: rgba(15, 23, 42, 0.04) !important;
+    color: rgba(15, 23, 42, 0.05) !important;
     text-transform: uppercase;
     letter-spacing: 6px;
     white-space: nowrap;
@@ -938,7 +980,7 @@ body {
 .pdf-ss-badge {
     width: 42px;
     height: 42px;
-    background: #4f46e5 !important;
+    background: linear-gradient(135deg, #4f46e5, #ec4899) !important;
     color: #ffffff !important;
     font-size: 18px;
     font-weight: 800;
@@ -1010,7 +1052,7 @@ body {
     font-weight: 700 !important;
 }
 
-.pdf-footer {
+.pdf-footer-repeat {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -1030,13 +1072,13 @@ body {
 }
 
 .pdf-ss-mini-symbol {
-    width: 20px;
-    height: 20px;
-    background: #4f46e5 !important;
+    width: 22px;
+    height: 22px;
+    background: linear-gradient(135deg, #4f46e5, #ec4899) !important;
     color: #ffffff !important;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 800;
-    border-radius: 50%;
+    border-radius: 6px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -1046,6 +1088,7 @@ body {
     font-size: 11px !important;
     color: #64748b !important;
 }
+
 
 
 

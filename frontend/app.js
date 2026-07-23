@@ -192,12 +192,12 @@ function exportPDF() {
 
     showToast("Generating high-contrast PDF document...");
     
-    // Create dedicated high-contrast PDF container with watermark & SS Developer badge
+    // Create dedicated high-contrast PDF container with watermark & SS emblem
     const pdfContainer = document.createElement("div");
     pdfContainer.className = "pdf-export-wrapper";
     
     pdfContainer.innerHTML = `
-        <div class="pdf-watermark">MULTI-AGENT COLLABORATION</div>
+        <div class="pdf-watermark-overlay">MULTI-AGENT COLLABORATION</div>
         <div class="pdf-header">
             <div class="pdf-brand">
                 <div class="pdf-ss-badge">SS</div>
@@ -212,23 +212,24 @@ function exportPDF() {
         <div class="pdf-body">
             ${marked.parse(lastReportMarkdown)}
         </div>
-        <div class="pdf-footer">
+        <div class="pdf-footer-repeat">
             <div class="pdf-footer-brand">
-                <span class="pdf-ss-mini-symbol">SS</span> Developed by <strong>SS Develop</strong>
+                <span class="pdf-ss-mini-symbol">SS</span> Developed by <strong>SS</strong>
             </div>
-            <div class="pdf-footer-note">Multi-Agent Collaboration AI Platform • Confidential</div>
+            <div class="pdf-footer-note">Multi-Agent Collaboration AI Platform</div>
         </div>
     `;
 
     document.body.appendChild(pdfContainer);
 
-    // PDF Export Settings (Crisp Black Text on White Page)
+    // PDF Export Settings (Crisp Black Text on White Page, Watermark on every page)
     const opt = {
         margin:       [10, 10, 15, 10],
         filename:     'multi_agent_collaborative_report.pdf',
         image:        { type: 'jpeg', quality: 0.98 },
         html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
-        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+        pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
     };
 
     html2pdf().set(opt).from(pdfContainer).save().then(() => {
