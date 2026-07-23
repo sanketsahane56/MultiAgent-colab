@@ -41,8 +41,14 @@
                     <p class="subtitle">Autonomous 5-Agent Collaborative Pipeline (Planner • Researcher • Analyst • Reviewer • Reporter)</p>
                 </div>
             </div>
-            <div class="status-badge" id="system-status">
-                <span class="status-dot green"></span> System Ready
+            <div class="header-right">
+                <div class="ss-developer-badge">
+                    <div class="ss-symbol">SS</div>
+                    <span class="ss-dev-text">Developed by <strong>SS Develop</strong></span>
+                </div>
+                <div class="status-badge" id="system-status">
+                    <span class="status-dot green"></span> System Ready
+                </div>
             </div>
         </header>
 
@@ -81,51 +87,71 @@
 
                 <!-- Workflow Execution Progress -->
                 <div class="progress-section" id="progress-container">
-                    <h3>Agent Execution Pipeline</h3>
+                    <h3><i class="fa-solid fa-bars-staggered"></i> Agent Execution Pipeline</h3>
                     <div class="agent-steps">
-                        <div class="step-card" id="step-planner">
+                        <div class="step-card agent-planner" id="step-planner">
                             <div class="step-header">
-                                <span class="step-num">1</span>
-                                <span class="step-title">Planner Agent</span>
+                                <div class="step-icon-box">
+                                    <i class="fa-solid fa-diagram-project"></i>
+                                </div>
+                                <div class="step-title-group">
+                                    <span class="step-title">1. Planner Agent</span>
+                                    <p class="step-desc">Decomposes request into sub-tasks</p>
+                                </div>
                                 <span class="step-badge pending" id="badge-planner">Waiting</span>
                             </div>
-                            <p class="step-desc">Decomposes request into sub-tasks</p>
                         </div>
 
-                        <div class="step-card" id="step-researcher">
+                        <div class="step-card agent-researcher" id="step-researcher">
                             <div class="step-header">
-                                <span class="step-num">2</span>
-                                <span class="step-title">Researcher Agent</span>
+                                <div class="step-icon-box">
+                                    <i class="fa-solid fa-magnifying-glass-chart"></i>
+                                </div>
+                                <div class="step-title-group">
+                                    <span class="step-title">2. Researcher Agent</span>
+                                    <p class="step-desc">Gathers technical & architectural facts</p>
+                                </div>
                                 <span class="step-badge pending" id="badge-researcher">Waiting</span>
                             </div>
-                            <p class="step-desc">Gathers technical & architectural facts</p>
                         </div>
 
-                        <div class="step-card" id="step-analyst">
+                        <div class="step-card agent-analyst" id="step-analyst">
                             <div class="step-header">
-                                <span class="step-num">3</span>
-                                <span class="step-title">Analyst Agent</span>
+                                <div class="step-icon-box">
+                                    <i class="fa-solid fa-chart-pie"></i>
+                                </div>
+                                <div class="step-title-group">
+                                    <span class="step-title">3. Analyst Agent</span>
+                                    <p class="step-desc">Evaluates trade-offs, pros & cons</p>
+                                </div>
                                 <span class="step-badge pending" id="badge-analyst">Waiting</span>
                             </div>
-                            <p class="step-desc">Evaluates trade-offs, pros & cons</p>
                         </div>
 
-                        <div class="step-card" id="step-reviewer">
+                        <div class="step-card agent-reviewer" id="step-reviewer">
                             <div class="step-header">
-                                <span class="step-num">4</span>
-                                <span class="step-title">Reviewer Agent</span>
+                                <div class="step-icon-box">
+                                    <i class="fa-solid fa-user-shield"></i>
+                                </div>
+                                <div class="step-title-group">
+                                    <span class="step-title">4. Reviewer Agent</span>
+                                    <p class="step-desc">Audits quality, gaps & edge cases</p>
+                                </div>
                                 <span class="step-badge pending" id="badge-reviewer">Waiting</span>
                             </div>
-                            <p class="step-desc">Audits quality, gaps & edge cases</p>
                         </div>
 
-                        <div class="step-card" id="step-reporter">
+                        <div class="step-card agent-reporter" id="step-reporter">
                             <div class="step-header">
-                                <span class="step-num">5</span>
-                                <span class="step-title">Reporter Agent</span>
+                                <div class="step-icon-box">
+                                    <i class="fa-solid fa-award"></i>
+                                </div>
+                                <div class="step-title-group">
+                                    <span class="step-title">5. Reporter Agent</span>
+                                    <p class="step-desc">Synthesizes final executive report</p>
+                                </div>
                                 <span class="step-badge pending" id="badge-reporter">Waiting</span>
                             </div>
-                            <p class="step-desc">Synthesizes final executive report</p>
                         </div>
                     </div>
                 </div>

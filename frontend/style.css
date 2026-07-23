@@ -794,5 +794,259 @@ body {
     box-shadow: 0 0 12px rgba(99, 102, 241, 0.4);
 }
 
+/* Header Right & SS Developer Emblem */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.ss-developer-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(99, 102, 241, 0.12);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    padding: 6px 14px;
+    border-radius: 20px;
+    box-shadow: 0 0 12px rgba(99, 102, 241, 0.2);
+}
+
+.ss-symbol {
+    width: 26px;
+    height: 26px;
+    background: linear-gradient(135deg, #ec4899, #8b5cf6);
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 800;
+    font-family: var(--font-heading);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 8px rgba(236, 72, 153, 0.6);
+}
+
+.ss-dev-text {
+    font-size: 13px;
+    color: #cbd5e1;
+}
+
+.ss-dev-text strong {
+    color: #a5b4fc;
+}
+
+/* Enhanced 5 Agent Step Cards */
+.step-card {
+    background: rgba(10, 14, 26, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-md);
+    padding: 12px 14px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.step-card:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateX(4px);
+}
+
+.step-icon-box {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-main);
+    transition: all 0.3s ease;
+}
+
+.agent-planner .step-icon-box { background: rgba(99, 102, 241, 0.2); border-color: rgba(99, 102, 241, 0.4); color: #818cf8; }
+.agent-researcher .step-icon-box { background: rgba(6, 182, 212, 0.2); border-color: rgba(6, 182, 212, 0.4); color: #22d3ee; }
+.agent-analyst .step-icon-box { background: rgba(139, 92, 246, 0.2); border-color: rgba(139, 92, 246, 0.4); color: #c084fc; }
+.agent-reviewer .step-icon-box { background: rgba(16, 185, 129, 0.2); border-color: rgba(16, 185, 129, 0.4); color: #34d399; }
+.agent-reporter .step-icon-box { background: rgba(244, 63, 94, 0.2); border-color: rgba(244, 63, 94, 0.4); color: #fb7185; }
+
+.step-title-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.step-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #f1f5f9;
+}
+
+.step-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+/* PDF Export High Contrast Styling & Watermark */
+.pdf-export-wrapper {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 30px;
+    background: #ffffff !important;
+    color: #090d16 !important;
+    font-family: 'Inter', sans-serif !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.pdf-watermark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-35deg);
+    font-size: 42px;
+    font-weight: 900;
+    font-family: 'Outfit', sans-serif;
+    color: rgba(15, 23, 42, 0.04) !important;
+    text-transform: uppercase;
+    letter-spacing: 6px;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.pdf-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+}
+
+.pdf-brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.pdf-ss-badge {
+    width: 42px;
+    height: 42px;
+    background: #4f46e5 !important;
+    color: #ffffff !important;
+    font-size: 18px;
+    font-weight: 800;
+    font-family: 'Outfit', sans-serif;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pdf-title {
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    color: #0f172a !important;
+    margin: 0 !important;
+}
+
+.pdf-subtitle {
+    font-size: 12px !important;
+    color: #475569 !important;
+    margin: 2px 0 0 0 !important;
+}
+
+.pdf-date {
+    font-size: 12px !important;
+    color: #64748b !important;
+    font-weight: 500;
+}
+
+.pdf-divider {
+    height: 2px;
+    background: #e2e8f0 !important;
+    margin: 16px 0 24px 0;
+}
+
+.pdf-body {
+    position: relative;
+    z-index: 1;
+    color: #0f172a !important;
+    font-size: 13px !important;
+    line-height: 1.6 !important;
+}
+
+.pdf-body h1, .pdf-body h2, .pdf-body h3 {
+    color: #0f172a !important;
+    font-family: 'Outfit', sans-serif !important;
+}
+
+.pdf-body h1 { font-size: 20px !important; border-bottom: 2px solid #cbd5e1 !important; padding-bottom: 6px !important; margin-top: 18px !important; }
+.pdf-body h2 { font-size: 16px !important; color: #1e1b4b !important; margin-top: 14px !important; }
+.pdf-body h3 { font-size: 14px !important; color: #3730a3 !important; margin-top: 12px !important; }
+.pdf-body p, .pdf-body li { color: #1e293b !important; font-size: 13px !important; }
+
+.pdf-body table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    margin: 14px 0 !important;
+}
+
+.pdf-body th, .pdf-body td {
+    border: 1px solid #cbd5e1 !important;
+    padding: 8px 12px !important;
+    color: #0f172a !important;
+    font-size: 12px !important;
+}
+
+.pdf-body th {
+    background: #f1f5f9 !important;
+    font-weight: 700 !important;
+}
+
+.pdf-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+    padding-top: 12px;
+    border-top: 1px solid #cbd5e1 !important;
+    position: relative;
+    z-index: 1;
+}
+
+.pdf-footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px !important;
+    color: #334155 !important;
+}
+
+.pdf-ss-mini-symbol {
+    width: 20px;
+    height: 20px;
+    background: #4f46e5 !important;
+    color: #ffffff !important;
+    font-size: 10px;
+    font-weight: 800;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pdf-footer-note {
+    font-size: 11px !important;
+    color: #64748b !important;
+}
+
+
 
 
