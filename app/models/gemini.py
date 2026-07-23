@@ -85,10 +85,10 @@ def generate_smart_fallback(prompt: str, system_prompt: str = "") -> str:
 
     # Detect Category (Career, Travel, Technology, Construction/Business)
     is_career = any(k in p_lower for k in ["teacher", "engineer", "doctor", "job", "career", "become", "degree", "learn", "course", "exam", "upsc", "developer", "lawyer", "police", "ca", "business"])
-    is_travel = any(k in p_lower for k in ["trip", "tour", "pune", "goa", "mumbai", "mahabaleshwar", "hotel", "visit", "travel", "road", "sightseeing", "vacation", "lonavala", "konkan"])
+    is_travel = any(k in p_lower for k in ["trip", "tour", "travel", "road", "visit", "vacation", "holiday", "itinerary", "stay", "resort", "lodge", "hotel", "dhaba", "highway", "goa", "mahabaleshwar", "pune", "mumbai", "lonavala", "konkan", "alibaug", "shimla", "manali", "kerala", "rajasthan", "udaipur", "ooty", "kashmir", "ladakh", "tirth", "temple", "hill", "beach", "fort", "lake", "picnic", "spot", "place", "route", "drive", "guide"])
     is_tech = any(k in p_lower for k in ["build", "bot", "app", "code", "streamlit", "python", "software", "website", "api", "model", "ai"])
 
-    # --- 1. TRAVEL DOMAIN (WITH ROUTE HOTELS & PICNIC SPOTS) ---
+    # --- 1. TRAVEL DOMAIN (WITH ROUTE HOTELS, LODGES & PICNIC SPOTS) ---
     if is_travel:
         # Check specific routes
         is_goa = "goa" in p_lower
@@ -96,51 +96,53 @@ def generate_smart_fallback(prompt: str, system_prompt: str = "") -> str:
         
         if is_goa:
             route_name = "Pune / Mumbai to Goa Route (via NH48 / Satara - Kolhapur - Amboli Ghat)"
-            hotels_list = """- **🏨 वाटेतील व गोव्यातील प्रसिद्ध हॉटेल्स (Recommended Hotels & Stays):**
-  1. **Hotel Sayaji (Kolhapur)** - NH48 हायवेवर नाश्ता व विश्रांतीसाठी सर्वोत्कृष्ट.
-  2. **Wildernest Nature Resort (Amboli Ghat)** - निसर्गरम्य व्ह्यू आणि फॅमिली स्टे.
-  3. **Resort Rio & Caravela Beach Resort (Goa)** - लक्झरी स्टे, स्विमिंग पूल आणि बीच व्ह्यू.
-  4. **Hotel Cidade de Goa / Taj Fort Aguada** - प्रीमियम बीच साईड रिसॉर्ट."""
+            hotels_list = """- **🏨 वाटेतील व गोव्यातील प्रसिद्ध लॉजेस, हॉटेल्स व रिसॉर्ट्स (Hotels, Lodges & Stays):**
+  1. **Hotel Sayaji & Hotel Pearl (Kolhapur)** - NH48 हायवेवर नाश्ता, लॉजिंग व विश्रांतीसाठी सर्वोत्कृष्ट.
+  2. **Wildernest Nature Resort (Amboli Ghat)** - निसर्गरम्य व्ह्यू, इको-लॉज व फॅमिली स्टे.
+  3. **Resort Rio & Caravela Beach Resort (Goa)** - लक्झरी बीच रिसॉर्ट्स, स्विमिंग पूल व सी-व्ह्यू लॉजेस.
+  4. **Hotel Cidade de Goa / Taj Fort Aguada** - प्रीमियम बीच साईड रिसॉर्ट व लॉजिंग."""
 
-            picnic_spots = """- **🏞️ वाटेतील मुख्य पिकनिक स्पॉट्स व प्रेक्षणीय स्थळे (Picnic Spots & Attractions):**
-  1. **रंकाळा तलाव (Rankala Lake, Kolhapur)** - हायवे जवळील प्रसिद्ध तलाव व चौपाटी.
-  2. **आंबोली घाट व धबधबा (Amboli Ghat Waterfall & Sunset Point)** - निसर्गरम्य व्ह्यू पॉईंट.
+            picnic_spots = """- **🏞️ वाटेतील मुख्य पिकनिक स्पॉट्स व प्रेक्षणीय स्थळे (Picnic Spots & Sightseeing):**
+  1. **रंकाळा तलाव (Rankala Lake, Kolhapur)** - हायवे जवळील प्रसिद्ध तलाव व चौपाटी पिकनिक स्पॉट.
+  2. **आंबोली घाटातील धबधबा (Amboli Ghat Waterfall & Sunset Point)** - निसर्गरम्य व्ह्यू पॉईंट व फोटोग्राफी स्पॉट.
   3. **अगुआडा किल्ला (Aguada Fort) व चापोरा किल्ला (Chapora Fort)** - ऐतिहासिक किल्ले व फोटो पॉईंट.
-  4. **बागा, कलंगूट व पालोलेम बीच (Baga & Palolem Beaches)** - वॉटर स्पोर्ट्स व वॉटर फॉल."""
+  4. **बागा, कलंगूट व पालोलेम बीच (Baga & Palolem Beaches)** - वॉटर स्पोर्ट्स व वॉटर फॉल पिकनिक स्पॉट्स."""
 
-            dhabas = """- **🍱 हायवे धाबे आणि खाद्यपदार्थ (Highway Food & Dhabas):**
+            dhabas = """- **🍱 हायवे धाबे आणि स्थानिक हॉटेल्स (Highway Food & Dhabas):**
   1. **हॉटेल मानस व हॉटेल देहाती (Kolhapur)** - कोल्हापुरी मटण/चिकन थाळी व तांबडा-पांढरा रस्सा.
-  2. **Britto's & Souza Lobo (Goa)** - बीच साईड सी-फूड व स्थानिक डिशेस."""
+  2. **Britto's & Souza Lobo (Goa)** - बीच साईड सी-फूड व स्थानिक मालवणी/गोवन डिशेस."""
 
         elif is_mahabaleshwar:
             route_name = "Mumbai / Pune to Mahabaleshwar Route (via Expressway - Shirwal - Wai - Panchgani)"
-            hotels_list = """- **🏨 वाटेतील व महाबळेश्वर मधील हॉटेल्स (Hotels & Resorts):**
-  1. **Hotel Ravine (Panchgani)** - व्हॅली व्ह्यू आणि कौटुंबिक राहण्यासाठी उत्तम.
+            hotels_list = """- **🏨 वाटेतील व महाबळेश्वर मधील लॉजेस व हॉटेल्स (Hotels, Lodges & Resorts):**
+  1. **Hotel Ravine & Valley View Lodge (Panchgani)** - व्हॅली व्ह्यू आणि कौटुंबिक राहण्यासाठी उत्तम लॉजिंग.
   2. **Le Méridien Resort & Spa (Mahabaleshwar)** - लक्झरी ५-स्टार रिसॉर्ट.
   3. **Brightland Resort & Spa** - सुंदर स्ट्रॉबेरी फार्म्स व स्विमिंग पूल.
-  4. **Evershine Resort** - बजेट व फॅमिली फ्रेंडली स्टे."""
+  4. **Evershine Resort & Family Lodges** - बजेट व फॅमिली फ्रेंडली स्टे लॉजेस."""
 
             picnic_spots = """- **🏞️ वाटेतील पिकनिक स्पॉट्स व व्ह्यू पॉईंट्स (Picnic & Sightseeing Spots):**
-  1. **मॅप्रो गार्डन (Mapro Garden, Panchgani)** - स्ट्रॉबेरी विथ क्रीम, गार्डन व पिकनिक स्पॉट.
-  2. **ऑर्थर सीट व एलिफंट हेड पॉईंट (Arthur's Seat & Elephant Head)** - मुख्य व्ह्यू पॉईंट्स.
-  3. **वेण्णा लेक (Venna Lake)** - बोटींग आणि घोडेस्वारी पिकनिक पॉईंट.
-  4. **प्रतापगड किल्ला (Pratapgad Fort)** - ऐतिहासिक किल्ला व व्ह्यू."""
+  1. **मॅप्रो गार्डन (Mapro Garden, Panchgani)** - स्ट्रॉबेरी विथ क्रीम, गार्डन व फॅमिली पिकनिक स्पॉट.
+  2. **ऑर्थर सीट व एलिफंट हेड पॉईंट (Arthur's Seat & Elephant Head)** - मुख्य निसर्गरम्य व्ह्यू पॉईंट्स.
+  3. **वेण्णा लेक (Venna Lake)** - बोटींग, घोडेस्वारी आणि खाद्यपदार्थांचा पिकनिक पॉईंट.
+  4. **प्रतापगड किल्ला (Pratapgad Fort)** - ऐतिहासिक किल्ला व व्ह्यू पॉईंट."""
 
-            dhabas = """- **🍱 हायवे फूड व रेस्टॉरंट्स (Food & Snack Stops):**
+            dhabas = """- **🍱 हायवे फूड व रेस्टॉरंट्स (Food & Highway Dhabas):**
   1. **हॉटेल अभिरुची (Wai Highway)** - गरमागरम मिसळ पाव व वडा पाव.
   2. **Mapro Garden Restaurant** - फ्रेश स्ट्रॉबेरी आईस्क्रीम व ग्रिल्ड सँडविच."""
 
         else:
             route_name = f"{topic_title} Scenic Route"
-            hotels_list = f"""- **🏨 सुचवलेली हॉटेल्स व रिसॉर्ट्स (Recommended Hotels & Stays):**
-  1. **3-Star & 5-Star Family Resorts** - पार्किंग, वाय-फाय आणि स्विमिंग पूल सुविधांसह.
-  2. **Highway Comfort Hotels** - प्रवासात विश्रांती व नाश्त्यासाठी उत्तम हॉटेल्स."""
+            hotels_list = f"""- **🏨 सुचवलेली हॉटेल्स, लॉजेस व रिसॉर्ट्स (Recommended Hotels, Lodges & Stays):**
+  1. **3-Star & 5-Star Family Resorts & Lodges** - पार्किंग, वाय-फाय, स्विमिंग पूल व जेवणाच्या उत्तम सुविधांसह लॉजेस.
+  2. **Highway Comfort Hotels & Lodges** - प्रवासात रात्रीच्या मुक्कामासाठी आणि विश्रांतीसाठी सुरक्षित हॉटेल्स व लॉजेस."""
 
-            picnic_spots = f"""- **🏞️ मुख्य पिकनिक स्पॉट्स व व्ह्यू पॉईंट्स (Picnic Spots & Attractions):**
-  1. **सनसेट व व्हॅली व्ह्यू पॉईंट्स** - निसर्गरम्य ठिकाणे आणि फोटोग्राफी स्पॉट्स.
-  2. **ऐतिहासिक किल्ले व तलाव** - कौटुंबिक सहलीसाठी उत्तम ठिकाणे."""
+            picnic_spots = f"""- **🏞️ मुख्य पिकनिक स्पॉट्स व व्ह्यू पॉईंट्स (Picnic Spots & Sightseeing Attractions):**
+  1. **सनसेट व व्हॅली व्ह्यू पॉईंट्स** - निसर्गरम्य व्ह्यू पॉईंट्स, धबधबे आणि फोटोग्राफी स्पॉट्स.
+  2. **ऐतिहासिक किल्ले व तलाव** - कौटुंबिक सहलीसाठी (Family Picnic) सर्वोत्तम प्रेक्षणीय ठिकाणे."""
 
-            dhabas = """- **🍱 हायवे धाबे व हॉटेल्स:** ताज्या स्थानिक जेवणासाठी प्रसिद्ध हायवे टच हॉटेल्स."""
+            dhabas = """- **🍱 हायवे धाबे व स्थानिक हॉटेल्स (Highway Dhabas & Restaurants):**
+  1. **प्रसिद्ध हायवे धाबे** - ताज्या गरमागरम स्थानिक भोजनासाठी हायवे टच हॉटेल्स.
+  2. **कौटुंबिक रेस्टॉरंट्स** - शुद्ध शाकाहारी व मांसाहारी थाळीसाठी उत्तम पर्याय."""
 
         if "planner" in sys_lower:
             return f"""### 🎯 दिवसानुसार प्रवास आराखडा (Day-by-Day Itinerary)
