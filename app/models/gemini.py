@@ -71,7 +71,7 @@ def try_groq_api(prompt: str, system_prompt: str = "") -> str:
         return res_data["choices"][0]["message"]["content"]
 
 def generate_smart_fallback(prompt: str, system_prompt: str = "") -> str:
-    """Domain-Aware Intelligent Agent Engine generating deep, topic-specific career, travel, tech & business insights without repeating agent titles."""
+    """Domain-Aware Intelligent Agent Engine generating deep, topic-specific career, travel, tech & business insights with explicit hotels & picnic spots."""
     sys_lower = system_prompt.lower()
     prompt_clean = re.sub(r'\[LANGUAGE INSTRUCTION:.*?\]', '', prompt, flags=re.DOTALL).strip()
     p_lower = prompt_clean.lower()
@@ -85,11 +85,202 @@ def generate_smart_fallback(prompt: str, system_prompt: str = "") -> str:
 
     # Detect Category (Career, Travel, Technology, Construction/Business)
     is_career = any(k in p_lower for k in ["teacher", "engineer", "doctor", "job", "career", "become", "degree", "learn", "course", "exam", "upsc", "developer", "lawyer", "police", "ca", "business"])
-    is_travel = any(k in p_lower for k in ["trip", "tour", "pune", "goa", "mumbai", "mahabaleshwar", "hotel", "visit", "travel", "road", "sightseeing", "vacation"])
+    is_travel = any(k in p_lower for k in ["trip", "tour", "pune", "goa", "mumbai", "mahabaleshwar", "hotel", "visit", "travel", "road", "sightseeing", "vacation", "lonavala", "konkan"])
     is_tech = any(k in p_lower for k in ["build", "bot", "app", "code", "streamlit", "python", "software", "website", "api", "model", "ai"])
 
-    # --- 1. CAREER & EDUCATION DOMAIN ---
-    if is_career:
+    # --- 1. TRAVEL DOMAIN (WITH ROUTE HOTELS & PICNIC SPOTS) ---
+    if is_travel:
+        # Check specific routes
+        is_goa = "goa" in p_lower
+        is_mahabaleshwar = "mahabaleshwar" in p_lower or "panchgani" in p_lower
+        
+        if is_goa:
+            route_name = "Pune / Mumbai to Goa Route (via NH48 / Satara - Kolhapur - Amboli Ghat)"
+            hotels_list = """- **🏨 वाटेतील व गोव्यातील प्रसिद्ध हॉटेल्स (Recommended Hotels & Stays):**
+  1. **Hotel Sayaji (Kolhapur)** - NH48 हायवेवर नाश्ता व विश्रांतीसाठी सर्वोत्कृष्ट.
+  2. **Wildernest Nature Resort (Amboli Ghat)** - निसर्गरम्य व्ह्यू आणि फॅमिली स्टे.
+  3. **Resort Rio & Caravela Beach Resort (Goa)** - लक्झरी स्टे, स्विमिंग पूल आणि बीच व्ह्यू.
+  4. **Hotel Cidade de Goa / Taj Fort Aguada** - प्रीमियम बीच साईड रिसॉर्ट."""
+
+            picnic_spots = """- **🏞️ वाटेतील मुख्य पिकनिक स्पॉट्स व प्रेक्षणीय स्थळे (Picnic Spots & Attractions):**
+  1. **रंकाळा तलाव (Rankala Lake, Kolhapur)** - हायवे जवळील प्रसिद्ध तलाव व चौपाटी.
+  2. **आंबोली घाट व धबधबा (Amboli Ghat Waterfall & Sunset Point)** - निसर्गरम्य व्ह्यू पॉईंट.
+  3. **अगुआडा किल्ला (Aguada Fort) व चापोरा किल्ला (Chapora Fort)** - ऐतिहासिक किल्ले व फोटो पॉईंट.
+  4. **बागा, कलंगूट व पालोलेम बीच (Baga & Palolem Beaches)** - वॉटर स्पोर्ट्स व वॉटर फॉल."""
+
+            dhabas = """- **🍱 हायवे धाबे आणि खाद्यपदार्थ (Highway Food & Dhabas):**
+  1. **हॉटेल मानस व हॉटेल देहाती (Kolhapur)** - कोल्हापुरी मटण/चिकन थाळी व तांबडा-पांढरा रस्सा.
+  2. **Britto's & Souza Lobo (Goa)** - बीच साईड सी-फूड व स्थानिक डिशेस."""
+
+        elif is_mahabaleshwar:
+            route_name = "Mumbai / Pune to Mahabaleshwar Route (via Expressway - Shirwal - Wai - Panchgani)"
+            hotels_list = """- **🏨 वाटेतील व महाबळेश्वर मधील हॉटेल्स (Hotels & Resorts):**
+  1. **Hotel Ravine (Panchgani)** - व्हॅली व्ह्यू आणि कौटुंबिक राहण्यासाठी उत्तम.
+  2. **Le Méridien Resort & Spa (Mahabaleshwar)** - लक्झरी ५-स्टार रिसॉर्ट.
+  3. **Brightland Resort & Spa** - सुंदर स्ट्रॉबेरी फार्म्स व स्विमिंग पूल.
+  4. **Evershine Resort** - बजेट व फॅमिली फ्रेंडली स्टे."""
+
+            picnic_spots = """- **🏞️ वाटेतील पिकनिक स्पॉट्स व व्ह्यू पॉईंट्स (Picnic & Sightseeing Spots):**
+  1. **मॅप्रो गार्डन (Mapro Garden, Panchgani)** - स्ट्रॉबेरी विथ क्रीम, गार्डन व पिकनिक स्पॉट.
+  2. **ऑर्थर सीट व एलिफंट हेड पॉईंट (Arthur's Seat & Elephant Head)** - मुख्य व्ह्यू पॉईंट्स.
+  3. **वेण्णा लेक (Venna Lake)** - बोटींग आणि घोडेस्वारी पिकनिक पॉईंट.
+  4. **प्रतापगड किल्ला (Pratapgad Fort)** - ऐतिहासिक किल्ला व व्ह्यू."""
+
+            dhabas = """- **🍱 हायवे फूड व रेस्टॉरंट्स (Food & Snack Stops):**
+  1. **हॉटेल अभिरुची (Wai Highway)** - गरमागरम मिसळ पाव व वडा पाव.
+  2. **Mapro Garden Restaurant** - फ्रेश स्ट्रॉबेरी आईस्क्रीम व ग्रिल्ड सँडविच."""
+
+        else:
+            route_name = f"{topic_title} Scenic Route"
+            hotels_list = f"""- **🏨 सुचवलेली हॉटेल्स व रिसॉर्ट्स (Recommended Hotels & Stays):**
+  1. **3-Star & 5-Star Family Resorts** - पार्किंग, वाय-फाय आणि स्विमिंग पूल सुविधांसह.
+  2. **Highway Comfort Hotels** - प्रवासात विश्रांती व नाश्त्यासाठी उत्तम हॉटेल्स."""
+
+            picnic_spots = f"""- **🏞️ मुख्य पिकनिक स्पॉट्स व व्ह्यू पॉईंट्स (Picnic Spots & Attractions):**
+  1. **सनसेट व व्हॅली व्ह्यू पॉईंट्स** - निसर्गरम्य ठिकाणे आणि फोटोग्राफी स्पॉट्स.
+  2. **ऐतिहासिक किल्ले व तलाव** - कौटुंबिक सहलीसाठी उत्तम ठिकाणे."""
+
+            dhabas = """- **🍱 हायवे धाबे व हॉटेल्स:** ताज्या स्थानिक जेवणासाठी प्रसिद्ध हायवे टच हॉटेल्स."""
+
+        if "planner" in sys_lower:
+            return f"""### 🎯 दिवसानुसार प्रवास आराखडा (Day-by-Day Itinerary)
+
+**प्रवास मार्ग:** {route_name}
+
+#### 📋 दिवसनिहाय नियोजन:
+1. **दिवस १: प्रवास सुरुवात, हायवे स्टॉप व आगमन**
+   - सकाळी प्रवासाला सुरुवात. वाटेत नाश्ता व **पिकनिक स्पॉट्स**ना भेट.
+   - दुपारी हॉटेल चेक-इन आणि संध्याकाळी स्थानिक सनसेट व्ह्यू.
+2. **दिवस २: मुख्य प्रेक्षणीय स्थळे व ॲडव्हेंचर**
+   - दिवसभर प्रसिद्ध व्ह्यू पॉईंट्स, किल्ले आणि वॉटर स्पोर्ट्स/बोटींग अनुभव.
+3. **दिवस ३: खरेदी व परतीचा प्रवास**
+   - स्थानिक बाजारपेठेत खरेदी आणि परतीचा प्रवास.
+"""
+
+        elif "researcher" in sys_lower:
+            return f"""### 🔍 मार्ग, हॉटेल्स आणि पिकनिक स्पॉट्स संशोधन (Hotels & Picnic Spots Guide)
+
+**मार्ग:** {route_name}
+
+{hotels_list}
+
+{picnic_spots}
+
+{dhabas}
+"""
+
+        elif "analyst" in sys_lower:
+            return f"""### 📈 मार्ग आणि वाहतूक तौलनिक विश्लेषण
+
+| घटक | स्वतःची कार (Self Drive) | खाजगी ट्रॅव्हल्स / बस | एक्सप्रेस ट्रेन |
+| :--- | :--- | :--- | :--- |
+| **प्रवासाचा वेळ** | ३ ते ५ तास (जलद) | ५ ते ७ तास | ४ ते ६ तास |
+| **सोयीस्करपणा** | उच्च (वाटेत कुठेही थांबता येते) | मध्यम | उच्च (आरामदायी) |
+| **अंदाजे खर्च** | पेट्रोल/टोलनुसार | ₹८०० - ₹१५००/सीट | ₹५०० - ₹१२००/सीट |
+"""
+
+        elif "reviewer" in sys_lower:
+            return f"""### 🛡️ प्रवास सुरक्षा व पूर्वतयारी ऑडिट
+
+#### ✅ प्रवासापूर्वीची चेकलिस्ट:
+1. **हॉटेल बुकिंग:** हॉटेल्सचे ॲडव्हान्स बुकिंग कन्फर्म ठेवावे.
+2. **गाडीची तपासणी:** टायर प्रेशर, इंजिन ऑईल व ब्रेक ऑईल तपासावे.
+3. **घाटातील खबरदारी:** घाटात सावकाश गाडी चालवावी व धुक्यात फॉग लाईट्स वापरावेत.
+4. **अंतिम निर्णय:** **प्रवासासाठी पूर्ण मंजुरी (APPROVED)**.
+"""
+
+        else:
+            # Reporter Agent (Unified Travel Solution)
+            if is_marathi:
+                return f"""# 🚀 {topic_title} - संपूर्ण प्रवास, हॉटेल्स व पिकनिक पॉईंट्स मार्गदर्शक
+
+**प्रवास मार्ग:** {route_name}
+
+---
+
+## 🏞️ १. वाटेतील मुख्य पिकनिक स्पॉट्स आणि प्रेक्षणीय स्थळे
+{picnic_spots}
+
+---
+
+## 🏨 २. राहण्यासाठी सर्वोत्तम हॉटेल्स व रिसॉर्ट्स
+{hotels_list}
+
+---
+
+## 🍱 ३. हायवे धाबे आणि प्रसिद्ध रेस्टॉरंट्स
+{dhabas}
+
+---
+
+## 🗓️ ४. दिवसानुसार प्रवास आखणी (Itinerary)
+- **दिवस १:** सकाळी प्रवासाला सुरुवात, हायवे ब्रेक, हॉटेल चेक-इन व संध्याकाळी सनसेट व्ह्यू.
+- **दिवस २:** पूर्ण दिवस मुख्य प्रेक्षणीय स्थळे, किल्ले, लेक व ॲडव्हेंचर.
+- **दिवस ३:** स्थानिक बाजारपेठेत खरेदी आणि आरामदायी परतीचा प्रवास.
+
+---
+
+## 💡 ५. प्रवासाचे महत्त्वाचे सल्ले
+- गाडीचे सर्व पेपर्स व ड्रायव्हिंग लायसन्स सोबत ठेवावे.
+- हॉटेल्सचे ॲडव्हान्स बुकिंग करून जावे जेणेकरून वेळेवर अडचण येणार नाही.
+"""
+            elif is_bilingual:
+                return f"""# 🚀 {topic_title} - Master Travel Guide / सविस्तर प्रवास अहवाल
+
+**Route / मार्ग:** {route_name}
+
+---
+
+## 🏞️ 1. Picnic Spots & Sightseeing / पिकनिक स्पॉट्स
+{picnic_spots}
+
+---
+
+## 🏨 2. Recommended Hotels & Resorts / हॉटेल्स व रिसॉर्ट्स
+{hotels_list}
+
+---
+
+## 🍱 3. Highway Food & Dhabas / हायवे धाबे
+{dhabas}
+
+---
+
+## 🗓️ 4. Day-by-Day Plan / दिवसनिहाय आखणी
+- **Day 1:** Morning departure, scenic highway breaks, hotel check-in & sunset point.
+- **Day 2:** Full-day sightseeing, forts, boating & local shopping.
+- **Day 3:** Souvenir shopping & comfortable return trip home.
+"""
+            else:
+                return f"""# 🚀 {topic_title} - Executive Master Travel Guide
+
+**Route:** {route_name}
+
+---
+
+## 🏞️ 1. Picnic Spots & Top Sightseeing Attractions
+{picnic_spots}
+
+---
+
+## 🏨 2. Recommended Hotels & Luxury Resorts
+{hotels_list}
+
+---
+
+## 🍱 3. Famous Highway Food Stops & Dhabas
+{dhabas}
+
+---
+
+## 🗓️ 4. Day-by-Day Master Itinerary
+- **Day 1:** Departure, scenic route stops, hotel check-in, and relaxation.
+- **Day 2:** Full-day sight-seeing, forts, lakes, and local activities.
+- **Day 3:** Shopping and smooth return journey.
+"""
+
+    # --- 2. CAREER & EDUCATION DOMAIN ---
+    elif is_career:
         if "planner" in sys_lower:
             if is_marathi:
                 return f"""### 🎯 करिअर आणि शिक्षण प्लॅन
@@ -308,62 +499,9 @@ def generate_smart_fallback(prompt: str, system_prompt: str = "") -> str:
 
 ---
 
-## ⚖️ 3. Trade-Off & Growth Analysis
-- **Govt Sector:** High job security and pension/benefits.
-- **Private/EdTech:** Accelerated career progression and performance bonuses.
-
----
-
-## 🏁 4. Final Recommendations
+## 🏁 3. Final Recommendations & Next Steps
 1. Ensure all degrees are NCTE/UGC verified.
 2. Build an active professional profile on LinkedIn & Naukri.
-"""
-
-    # --- 2. TRAVEL DOMAIN ---
-    elif is_travel:
-        if "planner" in sys_lower:
-            return f"""### 🎯 Day-by-Day Travel Itinerary
-
-**Trip Request:** {prompt_clean}
-
-#### 📋 Itinerary Breakdown:
-1. **Day 1: Departure & Arrival**
-   - Morning travel start via Train / Bus / Flight / Self-drive car.
-   - Hotel Check-in, freshen up, evening local market explore & beach/sunset view.
-2. **Day 2: Core Sightseeing & Attractions**
-   - Full day tour covering primary spots, historic monuments, water sports, and local picnic spots.
-   - Evening fine dining and local cuisine experience.
-3. **Day 3: Shopping & Return Journey**
-   - Morning souvenir shopping, check-out, and comfortable return journey home.
-"""
-        elif "researcher" in sys_lower:
-            return f"""### 🔍 Travel Logistics & Hotel Guide
-
-**Destination:** {prompt_clean}
-
-#### 📊 Recommended Stays & Spots:
-- **Best Hotels & Resorts:** 3-Star & 5-Star verified stays with breakfast & pool options.
-- **Top Attractions & Picnic Spots:** Popular beaches, hill viewpoints, historic forts, and scenic stops.
-- **Best Route Options:** Highway analysis with fuel stops, toll breakdown, and road condition alerts.
-- **Estimated Budget:** ₹8,000 – ₹20,000 per head (depending on travel mode & hotel selection).
-"""
-        else:
-            return f"""# 🚀 Executive Travel Solution - {topic_title}
-
-**Destination:** {prompt_clean}
-
----
-
-## 🎯 1. Day-by-Day Itinerary
-- **Day 1:** Arrival, hotel check-in, evening relaxation & local food.
-- **Day 2:** Full-day sightseeing, adventure activities, and local culture.
-- **Day 3:** Souvenir shopping & smooth return trip.
-
----
-
-## 🔍 2. Hotel & Route Analysis
-- **Verified Hotels:** Resort & Budget options available.
-- **Best Transport:** Self-drive or Express Train for maximum comfort.
 """
 
     # --- 3. TECH / SOFTWARE DOMAIN ---
