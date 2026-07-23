@@ -71,7 +71,7 @@ def try_groq_api(prompt: str, system_prompt: str = "") -> str:
         return res_data["choices"][0]["message"]["content"]
 
 def generate_smart_fallback(prompt: str, system_prompt: str = "") -> str:
-    """Domain-Aware Intelligent Agent Engine generating deep, topic-specific insights with zero text repetition, exact hotel locations, and interactive Google Maps embed."""
+    """Domain-Aware Intelligent Agent Engine generating deep, topic-specific insights for Career, Travel, Software & Business."""
     sys_lower = system_prompt.lower()
     
     # 1. Sanitize incoming prompt: Extract ONLY the original user query line
@@ -89,7 +89,7 @@ def generate_smart_fallback(prompt: str, system_prompt: str = "") -> str:
     key_term = words[0].capitalize() if words else "Goal"
 
     # Detect Category (Career, Travel, Technology, Construction/Business)
-    is_career = any(k in p_lower for k in ["teacher", "engineer", "doctor", "job", "career", "become", "degree", "learn", "course", "exam", "upsc", "developer", "lawyer", "police", "ca", "business"])
+    is_career = any(k in p_lower for k in ["teacher", "engineer", "doctor", "job", "career", "become", "degree", "learn", "course", "exam", "upsc", "developer", "lawyer", "police", "ca", "business", "professor", "ias", "ips", "civil", "architect", "accountant"])
     is_travel = any(k in p_lower for k in ["trip", "tour", "travel", "road", "visit", "vacation", "holiday", "itinerary", "stay", "resort", "lodge", "hotel", "dhaba", "highway", "goa", "mahabaleshwar", "pune", "nashik", "mumbai", "lonavala", "konkan", "alibaug", "shimla", "manali", "kerala", "rajasthan", "udaipur", "ooty", "kashmir", "ladakh", "tirth", "temple", "hill", "beach", "fort", "lake", "picnic", "spot", "place", "route", "drive", "guide"])
     is_tech = any(k in p_lower for k in ["build", "bot", "app", "code", "streamlit", "python", "software", "website", "api", "model", "ai"])
 
@@ -326,229 +326,176 @@ def generate_smart_fallback(prompt: str, system_prompt: str = "") -> str:
 - **Day 3:** Shopping and smooth return journey.
 """
 
-    # --- 2. CAREER & EDUCATION DOMAIN ---
+    # --- 2. CAREER & EDUCATION DOMAIN (SPECIFIC DEGREES, ENTRANCE EXAMS, SALARY & HIRING SECTORS) ---
     elif is_career:
+        is_teacher = "teacher" in p_lower or "शिक्ष" in p_lower
+        is_doctor = "doctor" in p_lower or "mbbs" in p_lower
+        is_lawyer = "lawyer" in p_lower or "वकील" in p_lower
+        is_upsc = "upsc" in p_lower or "ias" in p_lower or "ips" in p_lower
+
+        if is_teacher:
+            degrees = "**B.Ed (Bachelor of Education) / D.El.Ed (Diploma in Elementary Education)**"
+            exams = "**CTET (Central Teacher Eligibility Test) / State TET / NET / SET**"
+            hiring = "जिल्हा परिषद शाळा, केंद्रीय विद्यालय (KVS), नवोदय विद्यालय (NVS), आंतरराष्ट्रीय खाजगी शाळा व EdTech (Unacademy, PhysicsWallah)"
+            salary = "शुरुवातीचा पगार: ₹२५,००० - ₹४५,०००/महिना | अनुभव ५+ वर्षे: ₹६०,००० - ₹१,२०,०००+/महिना"
+            institutes = "सावित्रीबाई फुले पुणे विद्यापीठ (SPPU), मुंबई विद्यापीठ, दिल्ली विद्यापीठ (DU), NCERT"
+
+        elif is_doctor:
+            degrees = "**MBBS (Bachelor of Medicine, Bachelor of Surgery) + MD / MS Specialization**"
+            exams = "**NEET UG (Undergraduate) & NEET PG (Postgraduate)**"
+            hiring = "शासकीय वैद्यकीय महाविद्यालये, AIIMS, जिल्हा रुग्णालय, Apollo/Fortis/Ruby Hall खाजगी हॉस्पिटल्स, व स्वतःचे प्रायव्हेट क्लिनिक"
+            salary = "शुरुवातीचा स्टायपेंड/पगार: ₹६०,००० - ₹९०,०००/महिना | एम.डी. अनुभवानंतर: ₹१.५ लाख - ₹३.५ लाख+/महिना"
+            institutes = "AIIMS New Delhi, B.J. Medical College Pune, KEM Hospital Mumbai, Grant Medical College"
+
+        elif is_lawyer:
+            degrees = "**B.A. LL.B (5-Year Integrated Degree) किंवा LL.B (3-Year Degree) + LL.M**"
+            exams = "**CLAT (Common Law Admission Test) & AIBE (All India Bar Examination)**"
+            hiring = "हायकोर्ट व सुप्रीम कोर्ट प्रॅक्टिस, कॉर्पोरेट लॉ फर्म्स (AZB & Partners, Trilegal), लीगल ॲडव्हायझर व बँकिंग सेक्टर"
+            salary = "शुरुवातीचा पगार: ₹३५,००० - ₹६०,०००/महिना | कॉर्पोरेट/अनुभवी: ₹८०,००० - ₹२.५ लाख+/महिना"
+            institutes = "National Law School (NLSIU Bengaluru), NALSAR Hyderabad, ILS Law College Pune"
+
+        elif is_upsc:
+            degrees = "**कोणत्याही मान्यताप्राप्त विद्यापीठातील पदवी (Bachelor's Degree in any discipline)**"
+            exams = "**UPSC CSE (Civil Services Examination) - Prelims, Mains & Interview (Personality Test)**"
+            hiring = "भारतीय प्रशासकीय सेवा (IAS), भारतीय पोलीस सेवा (IPS), भारतीय महसूल सेवा (IRS) व केंद्र सरकारची मुख्य मंत्रालये"
+            salary = "शुरुवातीचा बेसिक पे: ₹५६,१०महिना + DA, TA, शासकीय निवासस्थान (Bungalow) व वाहन सुविधा"
+            institutes = "LBSNAA (Lal Bahadur Shastri National Academy of Administration, Mussoorie)"
+
+        else:
+            degrees = f"**{topic_title} मधील मान्यताप्राप्त पदवी (Bachelor's Degree / Professional Diploma)**"
+            exams = f"**{topic_title} प्रवेश व पात्रता परीक्षा (National Entrance Exams & Certifications)**"
+            hiring = "शासकीय उपक्रम (PSUs/Govt Portals), नामांकित कॉर्पोरेट कंपन्या, आणि जागतिक संस्था"
+            salary = "शुरुवातीचा पगार: ₹३०,००० - ₹५०,०००/महिना | अनुभवानंतर: ₹६५,००० - ₹१,५०,०००+/महिना"
+            institutes = "UGC / AICTE मान्यताप्राप्त प्रमुख राष्ट्रीय संस्था व विद्यापीठे"
+
         if "planner" in sys_lower:
-            if is_marathi:
-                return f"""### 🎯 करिअर आणि शिक्षण प्लॅन
+            return f"""### 🎯 {topic_title} - शिक्षण व करिअर मास्टर प्लॅन
 
 **ध्येय:** {prompt_clean}
 
-#### 📋 शिक्षणाची पात्रता आणि आवश्यक टप्पे:
-1. **टप्पा १: मूलभूत पदवी शिक्षण (Educational Degree Requirements)**
-   - {key_term} बनण्यासाठी संबंधित शाखेत पदवी (Bachelor's Degree) किंवा डिप्लोमा पूर्ण करणे अनिवार्य.
-   - उदा. शिक्षकासाठी (B.Ed / D.El.Ed / D.Ed), इंजिनियरसाठी (B.Tech / B.E.), डॉक्टरांसाठी (MBBS).
-2. **टप्पा २: आवश्यक प्रवेश परीक्षा व प्रमाणपत्रे (Competitive Exams & Certifications)**
-   - शिक्षकांसाठी: CTET (Central Teacher Eligibility Test) किंवा राज्यस्तरीय TET/SET/NET परीक्षा.
-   - इतर क्षेत्रांसाठी: GATE, UPSC, GRE, किंवा विशिष्ट Professional Skill Certification.
-3. **टप्पा ३: प्रात्यक्षिक कौशल्ये व इंटर्नशिप (Hands-on Skills & Experience)**
-   - १ ते २ वर्षांचा इंटर्नशिप किंवा असिस्टंटशिप अनुभव प्राप्त करणे.
-4. **टप्पा ४: करिअर सुरुवात व अर्ज प्रक्रिया (Job Application Strategy)**
-   - अधिकृत पोर्टलवर (Government Recruitment Notification / Corporate Portals) अर्ज करणे.
-"""
-            elif is_bilingual:
-                return f"""### 🎯 Career & Education Roadmap / करिअर व शिक्षण आराखडा
-
-**Career Goal / ध्येय:** {prompt_clean}
-
-#### 📋 Qualification & Milestones / शैक्षणिक पात्रता व टप्पे:
-1. **Phase 1: Required Educational Degree / टप्पा १: आवश्यक पदवी शिक्षण**
-   - Essential Bachelor's Degree / D.El.Ed / B.Ed / B.Tech or specialized diploma for {key_term}.
-2. **Phase 2: Entrance Exams & Certification / टप्पा २: परीक्षा व प्रमाणपत्रे**
-   - Clear TET / CTET / SET / NET or relevant eligibility exams / पात्रता परीक्षा उत्तीर्ण होणे.
-3. **Phase 3: Practical Training & Internship / टप्पा ३: प्रॅक्टिकल अनुभव व इंटर्नशिप**
-   - 1-2 years hands-on training or apprenticeship / १-२ वर्षे प्रत्यक्ष अनुभव.
-4. **Phase 4: Application & Placement / टप्पा ४: नोकरी अर्ज व प्लेसमेंट**
-   - Apply to target institutions & organizations / नोकरीसाठी अर्ज प्रक्रिया.
-"""
-            else:
-                return f"""### 🎯 {topic_title} Career & Education Roadmap
-
-**Career Goal:** {prompt_clean}
-
-#### 📋 Qualification & Milestones Breakdown:
-1. **Phase 1: Essential Educational Degree**
-   - Complete core degree or diploma (e.g., B.Ed/D.El.Ed for Teachers, B.Tech for Engineers, MBBS for Medical).
-2. **Phase 2: Competitive Entrance & Eligibility Exams**
-   - Clear mandatory certification exams (CTET/TET for teaching, GATE for engineering, NET/SET for academia).
-3. **Phase 3: Practical Internship & Skill Building**
-   - Acquire 1-2 years of real-world internship, student teaching, or apprenticeship experience.
-4. **Phase 4: Job Application & Career Launch**
-   - Apply via government job portals, private institution networks, and professional career platforms.
+#### 📋 शिक्षणाची पात्रता आणि टप्प्याटप्प्याने मार्गदर्शक:
+1. **टप्पा १: मूलभूत पदवी शिक्षण (Educational Qualification)**
+   - आवश्यक पदवी: {degrees}
+2. **टप्पा २: प्रवेश व पात्रता परीक्षा (Mandatory Competitive Exams)**
+   - उत्तीर्ण करायच्या परीक्षा: {exams}
+3. **टप्पा ३: प्रात्यक्षिक प्रशिक्षण व इंटर्नशिप (Hands-on Training)**
+   - १ ते २ वर्षांचा प्रत्यक्ष अनुभव आणि प्रात्यक्षिक कार्यशाळा.
+4. **टप्पा ४: नोकरी अर्ज व करिअर सुरुवात (Job Application)**
+   - शासकीय व खाजगी क्षेत्रातील अधिकृत पोर्टलवर अर्ज प्रक्रिया.
 """
 
         elif "researcher" in sys_lower:
-            if is_marathi:
-                return f"""### 🔍 नोकरीच्या संधी व पगार संशोधन (Job Market & Salary Insights)
+            return f"""### 🔍 {topic_title} - शिक्षण, परीक्षा, पगार व नोकरी संशोधन
 
 **क्षेत्र:** {prompt_clean}
 
-#### 📊 नोकऱ्या कोठे मिळतील (Where to Find Jobs):
-1. **शासकीय क्षेत्र (Government Sector):**
-   - जिल्हा परिषद शाळा, केंद्रीय विद्यालय (KVS), नवोदय विद्यालय (NVS), राज्य शिक्षण विभाग, आणि शासकीय उपक्रम.
-2. **खाजगी संस्था व कॉर्पोरेट (Private Sector):**
-   - खाजगी आंतरराष्ट्रीय शाळा, नामांकित महाविद्यालये, ऑनलाइन EdTech प्लॅटफॉर्म्स (Unacademy, BYJU'S, PhysicsWallah).
-3. **करिअर वाढ व अपेक्षित पगार (Salary Expectations):**
-   - **शुरुवातीचा पगार:** ₹२५,००० ते ₹५०,००० प्रति महिना.
-   - **अनुभवी पगार:** ₹६०,००० ते ₹१,२०,०००+ प्रति महिना (शासकीय/आंतरराष्ट्रीय संस्थांमध्ये).
-4. **अर्ज करण्याचे मुख्य मार्ग:** Naukri.com, LinkedIn, MahaTeacher recruitment portal, आणि वर्तमानपत्रातील जाहिराती.
-"""
-            elif is_bilingual:
-                return f"""### 🔍 Job Market & Opportunities / नोकरीच्या संधी व पगार संशोधन
+#### 🎓 १. आवश्यक पदवी व शिक्षण:
+- {degrees}
+- **प्रमुख शिक्षण संस्था:** {institutes}
 
-**Domain / क्षेत्र:** {prompt_clean}
+#### 📝 २. महत्त्वाच्या प्रवेश व पात्रता परीक्षा:
+- {exams}
 
-#### 📊 Hiring Opportunities & Career Avenues / नोकरीच्या संधी:
-1. **Government Sector / शासकीय क्षेत्र:**
-   - ZP Schools, Kendriya Vidyalaya (KVS), Navodaya (NVS), State Govt jobs / शासकीय नोकऱ्या.
-2. **Private & EdTech Sector / खाजगी संस्था व EdTech:**
-   - Private International Schools, Colleges, Online EdTech Platforms / खाजगी शाळा व ऑनलाईन प्लॅटफॉर्म्स.
-3. **Salary Ranges / अपेक्षित वेतन:**
-   - Entry-level: ₹25,000 - ₹50,000/month.
-   - Experienced: ₹60,000 - ₹1,20,000+/month.
-4. **Job Search Channels / नोकरी अर्ज मार्ग:** LinkedIn, Naukri, Govt Recruitment Bulletins.
-"""
-            else:
-                return f"""### 🔍 Job Market & Opportunities Research
+#### 💼 ३. नोकरीच्या संधी व क्षेत्रे (Hiring Sectors):
+- {hiring}
 
-**Domain:** {prompt_clean}
-
-#### 📊 Where to Find Jobs & Career Pathways:
-1. **Government & Public Institutions:**
-   - Central & State Government Institutions (Kendriya Vidyalaya, Navodaya Vidyalaya, District Education Boards, Public Sector Undertakings).
-2. **Private Sector & Educational Networks:**
-   - Private International Schools, Colleges, Coaching Centers, and Online EdTech Companies.
-3. **Expected Salary Structure:**
-   - **Entry Level:** ₹25,000 – ₹50,000 / month.
-   - **Experienced (5+ yrs):** ₹60,000 – ₹1,25,000+ / month.
-4. **Primary Job Portals:** LinkedIn, Naukri, State Recruitment Notifications, Official Institutional Portals.
+#### 💰 ४. अपेक्षित वेतन श्रेणी (Salary Scale):
+- {salary}
 """
 
         elif "analyst" in sys_lower:
-            return f"""### 📈 करिअर तौलनिक आणि जोखीम विश्लेषण
+            return f"""### 📈 शासकीय vs खाजगी क्षेत्र तौलनिक विश्लेषण - {topic_title}
 
-**मूल्यांकन विषय:** {prompt_clean}
-
-#### ⚖️ Evaluation Matrix:
-
-| घटक (Dimension) | शासकीय नोकरी (Govt Sector) | खाजगी क्षेत्र (Private / EdTech) | स्वयंरोजगार / ऑनलाईन (Freelance/Private Practice) |
-| :--- | :--- | :--- | :--- |
-| **नोकरीची सुरक्षितता (Security)** | अतिउच्च (Very High) | मध्यम (Moderate) | कौशल्यावर आधारित (Skill-based) |
-| **पगार वाढ (Salary Growth)** | नियमानुसार (Standard Pay Scales) | कामगिरीवर आधारित (Performance-based) | अथांग (Unlimited Potential) |
-| **काम-जीवन संतुलन (Work-Life Balance)** | उत्तम (Balanced) | आव्हानात्मक (High Workload) | लवचिक (Flexible) |
-
-#### 💡 तज्ञांचा सल्ला:
-- **सुरक्षितता हवी असल्यास:** शासकीय परीक्षांची (TET/CTET/Govt Exams) तयारी करावी.
-- **जलद पगारवाढ हवी असल्यास:** खाजगी आंतरराष्ट्रीय संस्था किंवा EdTech क्षेत्र निवडावे.
+| घटक (Criteria) | शासकीय क्षेत्र (Government Sector) | खाजगी कॉर्पोरेट क्षेत्र (Private Sector) |
+| :--- | :--- | :--- |
+| **नोकरीची सुरक्षितता** | उच्च व सुरक्षित | परफॉर्मन्सवर आधारित |
+| **पगार वाढ** | पे-कमिशन व निमयानुसार | जलद व अमर्याद वाढ |
+| **काम-जीवन संतुलन** | निश्चित वेळा व भत्ते | उच्च वर्कलोड व आधुनिक आव्हाने |
 """
 
         elif "reviewer" in sys_lower:
-            return f"""### 🛡️ पात्रता व गुणवत्ता पडताळणी
+            return f"""### 🛡️ पात्रता, युजीसी मान्यता व पडताळणी ऑडिट
 
-**तपासणी विषय:** {prompt_clean}
-
-#### ✅ Mandatory Audit Checkpoints:
-1. **Educational Qualification:** B.Ed / D.El.Ed / B.Tech degree passed from NCTE/UGC recognized university.
-2. **Age & Reservation Criteria:** Verify central & state age relaxation guidelines.
-3. **Common Mistakes to Avoid:**
-   - Unrecognized degree certificates.
-   - Missing CTET/TET passing certificates.
-   - Ignoring updated curriculum and digital teaching technology.
-4. **Audit Status:** **APPROVED (Green Light for Preparation)**.
+#### ✅ ऑडिट चेकलिस्ट:
+1. **पदवी मान्यता:** UGC / NCTE / AICTE / NMC कडून मान्यताप्राप्त विद्यापीठ असणे अनिवार्य.
+2. **परीक्षा गुण:** पात्रता परीक्षेत किमान ५५% ते ६०% गुण प्राप्त असावेत.
+3. **वय मर्यादा:** शासकीय वयोमर्यादा व सवलतींचे नियम तपासावेत.
+4. **अंतिम निर्णय:** **शिक्षणासाठी पूर्ण मंजुरी (APPROVED)**.
 """
 
         else:
-            # Reporter Agent (Unified Executive Guide)
+            # Reporter Agent (Master Unified Solution)
             if is_marathi:
-                return f"""# 🚀 {topic_title} - संपूर्ण करिअर आणि नोकरी मार्गदर्शक अहवाल
+                return f"""# 🚀 {topic_title} - संपूर्ण शैक्षणिक पात्रता, परीक्षा, नोकरी व पगार मार्गदर्शक
 
 **ध्येय:** {prompt_clean}
 
 ---
 
 ## 📌 कार्यकारी सारांश (Executive Summary)
-**{prompt_clean}** बनण्यासाठी आवश्यक शिक्षण, प्रवेश परीक्षा, नोकरीच्या संधी, पगार आणि टप्प्याटप्प्याने अंमलबजावणीचा संपूर्ण नकाशा खालीलप्रमाणे आहे.
+**{prompt_clean}** होण्यासाठी लागणारे आवश्यक शिक्षण, प्रवेश परीक्षा, नामांकित महाविद्यालये, नोकरीच्या संधी आणि अपेक्षित पगाराचा संपूर्ण अहवाल खालीलप्रमाणे आहे.
 
 ---
 
-## 🎓 १. आवश्यक शैक्षणिक पात्रता आणि परीक्षा
-- **आवश्यक पदवी:** B.Ed / D.El.Ed / B.Tech किंवा संबंधित क्षेत्रातील मान्यताप्राप्त पदवी.
-- **पात्रता परीक्षा:** CTET, TET, SET/NET परीक्षा उत्तीर्ण असणे आवश्यक.
-- **प्रात्यक्षिक अनुभव:** १ ते २ वर्षांचा शिक्षण किंवा इंटर्नशिप अनुभव.
+## 🎓 १. आवश्यक शैक्षणिक पात्रता आणि पदवी
+- **आवश्यक पदवी:** {degrees}
+- **प्रमुख शिक्षण संस्था:** {institutes}
 
 ---
 
-## 💼 २. नोकरीच्या संधी आणि अपेक्षित वेतन
-- **शासकीय क्षेत्र:** केंद्रीय विद्यालय (KVS), नवोदय विद्यालय (NVS), जिल्हा परिषद शाळा आणि सरकारी संस्था.
-- **खाजगी क्षेत्र:** आंतरराष्ट्रीय शाळा, महाविद्यालये, ऑनलाइन EdTech प्लॅटफॉर्म्स (Unacademy, BYJU'S इ.).
-- **अपेक्षित पगार:** सुरुवात ₹२५,००० - ₹५०,०००; अनुभवानंतर ₹६०,००० - ₹१,२०,०००+/महिना.
+## 📝 २. महत्त्वाच्या प्रवेश व पात्रता परीक्षा
+- **अनिवार्य परीक्षा:** {exams}
+- **पात्रता अट:** पदवीमध्ये किमान ५५% गुण व परीक्षेचे वैध प्रमाणपत्र.
 
 ---
 
-## ⚖️ ३. शासकीय vs खाजगी क्षेत्र तौलनिक विश्लेषण
-- **शासकीय नोकरी:** उच्च सुरक्षा, पेन्शन/भत्ते आणि निश्चित कामाच्या वेळा.
-- **खाजगी क्षेत्र:** जलद पगारवाढ, आधुनिक तंत्रज्ञानाचा वापर आणि पदोन्नती.
+## 💼 ३. नोकरी मिळण्याची प्रमुख क्षेत्रे (Hiring Avenues)
+- {hiring}
 
 ---
 
-## 🏁 ४. अंतिम अंमलबजावणीच्या पायऱ्या
-1. मान्यताप्राप्त संस्थेत पदवी पूर्ण करावी (NCTE / UGC verified).
-2. CTET/TET किंवा संबंधित पात्रता परीक्षा उत्तीर्ण करावी.
-3. LinkedIn आणि Naukri वर प्रोफाईल तयार करून अर्ज प्रक्रिया सुरू करावी.
-"""
-            elif is_bilingual:
-                return f"""# 🚀 {topic_title} - Complete Career Solution / सविस्तर करिअर मार्गदर्शक
-
-**Goal / ध्येय:** {prompt_clean}
+## 💰 ४. अपेक्षित वेतन श्रेणी (Salary Expectation)
+- {salary}
 
 ---
 
-## 🎓 1. Educational Requirements / १. शैक्षणिक पात्रता
-- **Degrees Required / आवश्यक पदवी:** B.Ed / D.El.Ed / B.Tech / Core Degree.
-- **Exams to Clear / महत्त्वाच्या परीक्षा:** CTET / TET / SET / NET / GATE.
-
----
-
-## 💼 2. Job Avenues & Salary / २. नोकरीच्या संधी व पगार
-- **Sectors / क्षेत्रे:** Govt Schools (KVS/NVS/ZP), Private International Institutions, EdTech.
-- **Salary / पगार:** Entry ₹25k-50k/mo | Experienced ₹60k-1.2L+/mo.
-
----
-
-## ⚖️ 3. Strategic Analysis / ३. तौलनिक विश्लेषण
-- **Govt vs Private:** Govt provides high stability; Private offers faster salary hikes.
-
----
-
-## 🏁 4. Action Steps / ४. पुढील पायऱ्या
-1. Enroll in accredited degree program.
-2. Prepare and clear competitive eligibility exams.
-3. Apply on active career portals (LinkedIn, Naukri, Govt notifications).
+## 🏁 ५. करिअर सुरू करण्यासाठी पुढील पायऱ्या
+1. मान्यताप्राप्त संस्थेत पदवीसाठी प्रवेश घ्यावा.
+2. पात्रता परीक्षांची (Entrance Exams) १ वर्ष आधीपासून तयारी सुरू करावी.
+3. शासकीय व खाजगी क्षेत्रातील अधिकृत जाहिरातींवर अर्ज करावा.
 """
             else:
-                return f"""# 🚀 {topic_title} - Master Executive Career Guide
+                return f"""# 🚀 {topic_title} - Master Career & Education Solution
 
-**Career Target:** {prompt_clean}
-
----
-
-## 🎓 1. Master Educational Plan
-- **Degree:** Complete accredited Bachelor's Degree / Professional Diploma.
-- **Competitive Exams:** Clear mandatory eligibility tests (CTET / TET / NET / GATE).
-- **Practical Training:** Gain 1-2 years internship/apprenticeship experience.
+**Target Career:** {prompt_clean}
 
 ---
 
-## 💼 2. Job Market & Hiring Avenues
-- **Government Institutions:** Central/State Schools, Public Sector Undertakings.
-- **Private Sector:** Top International Schools, Colleges, Corporate Training & EdTech.
-- **Expected Pay Scale:** Starting ₹25,000–₹50,000/mo; Experienced ₹60,000–₹1,20,000+/mo.
+## 🎓 1. Educational Degrees & Qualifications
+- **Required Degree:** {degrees}
+- **Top Recognized Institutes:** {institutes}
 
 ---
 
-## 🏁 3. Final Recommendations & Next Steps
-1. Ensure all degrees are NCTE/UGC verified.
-2. Build an active professional profile on LinkedIn & Naukri.
+## 📝 2. Mandatory Competitive Exams
+- **Eligibility Exams:** {exams}
+
+---
+
+## 💼 3. Hiring Sectors & Career Opportunities
+- {hiring}
+
+---
+
+## 💰 4. Expected Salary Range
+- {salary}
+
+---
+
+## 🏁 5. Recommended Action Plan
+1. Complete accredited degree program.
+2. Clear national eligibility certification exams.
+3. Apply via active institutional recruitment channels.
 """
 
     # --- 3. TECH / SOFTWARE DOMAIN ---
