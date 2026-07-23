@@ -112,10 +112,12 @@ async function startWorkflow() {
     }, 1500);
 
     try {
+        const selectedLanguage = document.getElementById("report-language") ? document.getElementById("report-language").value : "english";
+
         const response = await fetch("/api/run", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ query: query })
+            body: JSON.stringify({ query: query, language: selectedLanguage })
         });
 
         clearInterval(stepInterval);

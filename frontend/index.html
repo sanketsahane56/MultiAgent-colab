@@ -57,6 +57,15 @@
                     <textarea id="user-query" placeholder="e.g., Build an AI Chatbot using Streamlit and Gemini API..." rows="4"></textarea>
                 </div>
 
+                <div class="lang-selector-group">
+                    <label for="report-language"><i class="fa-solid fa-language"></i> Output Language / भाषा:</label>
+                    <select id="report-language" class="lang-select">
+                        <option value="english">🇬🇧 English</option>
+                        <option value="marathi">🇮🇳 Marathi (मराठी)</option>
+                        <option value="bilingual" selected>🌐 English + Marathi (द्विभाषिक / Bilingual)</option>
+                    </select>
+                </div>
+
                 <div class="preset-chips">
                     <span class="chip-label">Quick Prompts:</span>
                     <button class="chip" onclick="setPrompt('Plan a 3-day road trip from Pune to Goa with hotels, picnic spots & best route analysis')">🚗 Pune to Goa Road Trip</button>

@@ -14,6 +14,7 @@ app = FastAPI(
 
 class RequestPayload(BaseModel):
     query: str
+    language: str = "english"
 
 @app.get("/api/health")
 def health_check():
@@ -36,7 +37,7 @@ def run_workflow(payload: RequestPayload):
         raise HTTPException(status_code=400, detail="Query cannot be empty.")
     
     try:
-        result = run_multi_agent_workflow(payload.query)
+        result = run_multi_agent_workflow(payload.query, payload.language)
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Workflow execution failed: {str(e)}")
