@@ -16,9 +16,15 @@ MODEL_PRIORITY = [
 ]
 
 def get_gemini_client():
-    api_key = os.getenv("GOOGLE_API_KEY") or os.getenv("GEMINI_API_KEY")
+    api_key = (os.getenv("GOOGLE_API_KEY") or os.getenv("GEMINI_API_KEY") or "").strip()
     if not api_key:
         raise ValueError("Missing Gemini API Key. Please set GOOGLE_API_KEY or GEMINI_API_KEY in your environment / Vercel settings.")
+    
+    # If the provided key starts with 'AQ.' or 'ya29.', it's an OAuth Access Token.
+    # Send as Authorization Bearer header so Google API accepts OAuth token.
+    if api_key.startswith("AQ.") or api_key.startswith("ya29."):
+        return genai.Client(http_options={"headers": {"Authorization": f"Bearer {api_key}"}})
+    
     return genai.Client(api_key=api_key)
 
 def generate_agent_response(prompt: str, system_prompt: str = "") -> str:
