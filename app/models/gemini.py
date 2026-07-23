@@ -71,7 +71,7 @@ def try_groq_api(prompt: str, system_prompt: str = "") -> str:
         return res_data["choices"][0]["message"]["content"]
 
 def generate_smart_fallback(prompt: str, system_prompt: str = "") -> str:
-    """Domain-Aware Intelligent Agent Engine generating deep, topic-specific career, travel, tech & business insights."""
+    """Domain-Aware Intelligent Agent Engine generating deep, topic-specific career, travel, tech & business insights without repeating agent titles."""
     sys_lower = system_prompt.lower()
     prompt_clean = re.sub(r'\[LANGUAGE INSTRUCTION:.*?\]', '', prompt, flags=re.DOTALL).strip()
     p_lower = prompt_clean.lower()
@@ -92,9 +92,9 @@ def generate_smart_fallback(prompt: str, system_prompt: str = "") -> str:
     if is_career:
         if "planner" in sys_lower:
             if is_marathi:
-                return f"""### 🎯 प्लॅनर एजंट - {topic_title} करिअर आणि शिक्षण प्लॅन
+                return f"""### 🎯 करिअर आणि शिक्षण प्लॅन
 
-**करिअर ध्येय:** {prompt_clean}
+**ध्येय:** {prompt_clean}
 
 #### 📋 शिक्षणाची पात्रता आणि आवश्यक टप्पे:
 1. **टप्पा १: मूलभूत पदवी शिक्षण (Educational Degree Requirements)**
@@ -109,7 +109,7 @@ def generate_smart_fallback(prompt: str, system_prompt: str = "") -> str:
    - अधिकृत पोर्टलवर (Government Recruitment Notification / Corporate Portals) अर्ज करणे.
 """
             elif is_bilingual:
-                return f"""### 🎯 Planner Agent - Career & Education Roadmap / करिअर व शिक्षण आराखडा
+                return f"""### 🎯 Career & Education Roadmap / करिअर व शिक्षण आराखडा
 
 **Career Goal / ध्येय:** {prompt_clean}
 
@@ -124,7 +124,7 @@ def generate_smart_fallback(prompt: str, system_prompt: str = "") -> str:
    - Apply to target institutions & organizations / नोकरीसाठी अर्ज प्रक्रिया.
 """
             else:
-                return f"""### 🎯 Planner Agent - {topic_title} Career & Education Roadmap
+                return f"""### 🎯 {topic_title} Career & Education Roadmap
 
 **Career Goal:** {prompt_clean}
 
@@ -141,7 +141,7 @@ def generate_smart_fallback(prompt: str, system_prompt: str = "") -> str:
 
         elif "researcher" in sys_lower:
             if is_marathi:
-                return f"""### 🔍 रिसर्चर एजंट - नोकरीच्या संधी व पगार संशोधन (Job Market & Salary Insights)
+                return f"""### 🔍 नोकरीच्या संधी व पगार संशोधन (Job Market & Salary Insights)
 
 **क्षेत्र:** {prompt_clean}
 
@@ -156,7 +156,7 @@ def generate_smart_fallback(prompt: str, system_prompt: str = "") -> str:
 4. **अर्ज करण्याचे मुख्य मार्ग:** Naukri.com, LinkedIn, MahaTeacher recruitment portal, आणि वर्तमानपत्रातील जाहिराती.
 """
             elif is_bilingual:
-                return f"""### 🔍 Researcher Agent - Job Market & Opportunities / नोकरीच्या संधी व पगार संशोधन
+                return f"""### 🔍 Job Market & Opportunities / नोकरीच्या संधी व पगार संशोधन
 
 **Domain / क्षेत्र:** {prompt_clean}
 
@@ -171,7 +171,7 @@ def generate_smart_fallback(prompt: str, system_prompt: str = "") -> str:
 4. **Job Search Channels / नोकरी अर्ज मार्ग:** LinkedIn, Naukri, Govt Recruitment Bulletins.
 """
             else:
-                return f"""### 🔍 Researcher Agent - Job Market & Opportunities Research
+                return f"""### 🔍 Job Market & Opportunities Research
 
 **Domain:** {prompt_clean}
 
@@ -187,9 +187,9 @@ def generate_smart_fallback(prompt: str, system_prompt: str = "") -> str:
 """
 
         elif "analyst" in sys_lower:
-            return f"""### 📈 Analyst Agent - Career Growth & Trade-Off Matrix
+            return f"""### 📈 करिअर तौलनिक आणि जोखीम विश्लेषण
 
-**Career Option:** {prompt_clean}
+**मूल्यांकन विषय:** {prompt_clean}
 
 #### ⚖️ Evaluation Matrix:
 
@@ -199,15 +199,15 @@ def generate_smart_fallback(prompt: str, system_prompt: str = "") -> str:
 | **पगार वाढ (Salary Growth)** | नियमानुसार (Standard Pay Scales) | कामगिरीवर आधारित (Performance-based) | अथांग (Unlimited Potential) |
 | **काम-जीवन संतुलन (Work-Life Balance)** | उत्तम (Balanced) | आव्हानात्मक (High Workload) | लवचिक (Flexible) |
 
-#### 💡 ॲनालिस्टची शिफारस:
+#### 💡 तज्ञांचा सल्ला:
 - **सुरक्षितता हवी असल्यास:** शासकीय परीक्षांची (TET/CTET/Govt Exams) तयारी करावी.
 - **जलद पगारवाढ हवी असल्यास:** खाजगी आंतरराष्ट्रीय संस्था किंवा EdTech क्षेत्र निवडावे.
 """
 
         elif "reviewer" in sys_lower:
-            return f"""### 🛡️ Reviewer Agent - Eligibility Audit & Pitfalls Checklist
+            return f"""### 🛡️ पात्रता व गुणवत्ता पडताळणी
 
-**Career Audit:** {prompt_clean}
+**तपासणी विषय:** {prompt_clean}
 
 #### ✅ Mandatory Audit Checkpoints:
 1. **Educational Qualification:** B.Ed / D.El.Ed / B.Tech degree passed from NCTE/UGC recognized university.
@@ -220,7 +220,7 @@ def generate_smart_fallback(prompt: str, system_prompt: str = "") -> str:
 """
 
         else:
-            # Reporter Agent
+            # Reporter Agent (Unified Executive Guide)
             if is_marathi:
                 return f"""# 🚀 {topic_title} - संपूर्ण करिअर आणि नोकरी मार्गदर्शक अहवाल
 
@@ -229,55 +229,55 @@ def generate_smart_fallback(prompt: str, system_prompt: str = "") -> str:
 ---
 
 ## 📌 कार्यकारी सारांश (Executive Summary)
-हा अहवाल ५ एआय एजंट्सच्या संयुक्त विश्लेषणातून तयार करण्यात आला आहे. **{prompt_clean}** बनण्यासाठी आवश्यक शिक्षण, परीक्षा, नोकरीच्या संधी, आणि वेतनाचा संपूर्ण नकाशा खालीलप्रमाणे आहे.
+**{prompt_clean}** बनण्यासाठी आवश्यक शिक्षण, प्रवेश परीक्षा, नोकरीच्या संधी, पगार आणि टप्प्याटप्प्याने अंमलबजावणीचा संपूर्ण नकाशा खालीलप्रमाणे आहे.
 
 ---
 
-## 🎯 १. शिक्षण आणि आवश्यक पात्रता (Planner Agent)
+## 🎓 १. आवश्यक शैक्षणिक पात्रता आणि परीक्षा
 - **आवश्यक पदवी:** B.Ed / D.El.Ed / B.Tech किंवा संबंधित क्षेत्रातील मान्यताप्राप्त पदवी.
-- **महत्त्वाच्या परीक्षा:** CTET, TET, SET/NET किंवा पात्रता परीक्षा उत्तीर्ण होणे.
-- **अनुभव:** १ ते २ वर्षांचा शिक्षण किंवा प्रात्यक्षिक अनुभव.
+- **पात्रता परीक्षा:** CTET, TET, SET/NET परीक्षा उत्तीर्ण असणे आवश्यक.
+- **प्रात्यक्षिक अनुभव:** १ ते २ वर्षांचा शिक्षण किंवा इंटर्नशिप अनुभव.
 
 ---
 
-## 🔍 २. नोकरी कोठे मिळेल व अपेक्षित पगार (Researcher Agent)
-- **शासकीय क्षेत्र:** केंद्रीय विद्यालय, नवोदय, जिल्हा परिषद शाळा आणि सरकारी संस्था.
-- **खाजगी क्षेत्र:** आंतरराष्ट्रीय शाळा, महाविद्यालये, ऑनलाइन EdTech प्लॅटफॉर्म्स.
+## 💼 २. नोकरीच्या संधी आणि अपेक्षित वेतन
+- **शासकीय क्षेत्र:** केंद्रीय विद्यालय (KVS), नवोदय विद्यालय (NVS), जिल्हा परिषद शाळा आणि सरकारी संस्था.
+- **खाजगी क्षेत्र:** आंतरराष्ट्रीय शाळा, महाविद्यालये, ऑनलाइन EdTech प्लॅटफॉर्म्स (Unacademy, BYJU'S इ.).
 - **अपेक्षित पगार:** सुरुवात ₹२५,००० - ₹५०,०००; अनुभवानंतर ₹६०,००० - ₹१,२०,०००+/महिना.
 
 ---
 
-## 📊 ३. तौलनिक विश्लेषण (Analyst Agent)
-- **शासकीय नोकरी:** उच्च नोकरी सुरक्षा आणि निवृत्ती वेतन फायदे.
-- **खाजगी व EdTech:** जलद पगारवाढ आणि आधुनिक तंत्रज्ञानाचा वापर.
+## ⚖️ ३. शासकीय vs खाजगी क्षेत्र तौलनिक विश्लेषण
+- **शासकीय नोकरी:** उच्च सुरक्षा, पेन्शन/भत्ते आणि निश्चित कामाच्या वेळा.
+- **खाजगी क्षेत्र:** जलद पगारवाढ, आधुनिक तंत्रज्ञानाचा वापर आणि पदोन्नती.
 
 ---
 
-## 🛡️ ४. पात्रता व दक्षता पडताळणी (Reviewer Agent)
-- सर्व पदव्या **NCTE / UGC** मान्यताप्राप्त असाव्यात.
-- प्रमाणपत्रे अद्ययावत ठेवावीत.
-- **निष्कर्ष:** अंमलबजावणीसाठी पूर्णतः मंजूर!
+## 🏁 ४. अंतिम अंमलबजावणीच्या पायऱ्या
+1. मान्यताप्राप्त संस्थेत पदवी पूर्ण करावी (NCTE / UGC verified).
+2. CTET/TET किंवा संबंधित पात्रता परीक्षा उत्तीर्ण करावी.
+3. LinkedIn आणि Naukri वर प्रोफाईल तयार करून अर्ज प्रक्रिया सुरू करावी.
 """
             elif is_bilingual:
-                return f"""# 🚀 {topic_title} - Complete Career Blueprint / सविस्तर करिअर अहवाल
+                return f"""# 🚀 {topic_title} - Complete Career Solution / सविस्तर करिअर मार्गदर्शक
 
 **Goal / ध्येय:** {prompt_clean}
 
 ---
 
-## 🎯 1. Educational Roadmap / १. शैक्षणिक पात्रता
+## 🎓 1. Educational Requirements / १. शैक्षणिक पात्रता
 - **Degrees Required / आवश्यक पदवी:** B.Ed / D.El.Ed / B.Tech / Core Degree.
 - **Exams to Clear / महत्त्वाच्या परीक्षा:** CTET / TET / SET / NET / GATE.
 
 ---
 
-## 🔍 2. Job Opportunities & Salary / २. नोकरीच्या संधी व पगार
+## 💼 2. Job Avenues & Salary / २. नोकरीच्या संधी व पगार
 - **Sectors / क्षेत्रे:** Govt Schools (KVS/NVS/ZP), Private International Institutions, EdTech.
 - **Salary / पगार:** Entry ₹25k-50k/mo | Experienced ₹60k-1.2L+/mo.
 
 ---
 
-## 📊 3. Career Trade-Off Analysis / ३. तौलनिक विश्लेषण
+## ⚖️ 3. Strategic Analysis / ३. तौलनिक विश्लेषण
 - **Govt vs Private:** Govt provides high stability; Private offers faster salary hikes.
 
 ---
@@ -288,27 +288,27 @@ def generate_smart_fallback(prompt: str, system_prompt: str = "") -> str:
 3. Apply on active career portals (LinkedIn, Naukri, Govt notifications).
 """
             else:
-                return f"""# 🚀 {topic_title} - Master Executive Career Blueprint
+                return f"""# 🚀 {topic_title} - Master Executive Career Guide
 
 **Career Target:** {prompt_clean}
 
 ---
 
-## 🎯 1. Master Educational Plan (Planner Agent)
+## 🎓 1. Master Educational Plan
 - **Degree:** Complete accredited Bachelor's Degree / Professional Diploma.
 - **Competitive Exams:** Clear mandatory eligibility tests (CTET / TET / NET / GATE).
 - **Practical Training:** Gain 1-2 years internship/apprenticeship experience.
 
 ---
 
-## 🔍 2. Job Market & Hiring Avenues (Researcher Agent)
+## 💼 2. Job Market & Hiring Avenues
 - **Government Institutions:** Central/State Schools, Public Sector Undertakings.
 - **Private Sector:** Top International Schools, Colleges, Corporate Training & EdTech.
 - **Expected Pay Scale:** Starting ₹25,000–₹50,000/mo; Experienced ₹60,000–₹1,20,000+/mo.
 
 ---
 
-## 📊 3. Trade-Off & Growth Analysis (Analyst Agent)
+## ⚖️ 3. Trade-Off & Growth Analysis
 - **Govt Sector:** High job security and pension/benefits.
 - **Private/EdTech:** Accelerated career progression and performance bonuses.
 
@@ -322,11 +322,11 @@ def generate_smart_fallback(prompt: str, system_prompt: str = "") -> str:
     # --- 2. TRAVEL DOMAIN ---
     elif is_travel:
         if "planner" in sys_lower:
-            return f"""### 🎯 Planner Agent - {topic_title} Travel Itinerary
+            return f"""### 🎯 Day-by-Day Travel Itinerary
 
 **Trip Request:** {prompt_clean}
 
-#### 📋 Day-by-Day Travel Plan:
+#### 📋 Itinerary Breakdown:
 1. **Day 1: Departure & Arrival**
    - Morning travel start via Train / Bus / Flight / Self-drive car.
    - Hotel Check-in, freshen up, evening local market explore & beach/sunset view.
@@ -337,7 +337,7 @@ def generate_smart_fallback(prompt: str, system_prompt: str = "") -> str:
    - Morning souvenir shopping, check-out, and comfortable return journey home.
 """
         elif "researcher" in sys_lower:
-            return f"""### 🔍 Researcher Agent - Travel Logistics & Hotel Guide
+            return f"""### 🔍 Travel Logistics & Hotel Guide
 
 **Destination:** {prompt_clean}
 
@@ -348,20 +348,20 @@ def generate_smart_fallback(prompt: str, system_prompt: str = "") -> str:
 - **Estimated Budget:** ₹8,000 – ₹20,000 per head (depending on travel mode & hotel selection).
 """
         else:
-            return f"""# 🚀 Executive Travel Guide - {topic_title}
+            return f"""# 🚀 Executive Travel Solution - {topic_title}
 
 **Destination:** {prompt_clean}
 
 ---
 
-## 🎯 1. Day-by-Day Itinerary (Planner Agent)
+## 🎯 1. Day-by-Day Itinerary
 - **Day 1:** Arrival, hotel check-in, evening relaxation & local food.
 - **Day 2:** Full-day sightseeing, adventure activities, and local culture.
 - **Day 3:** Souvenir shopping & smooth return trip.
 
 ---
 
-## 🔍 2. Hotel & Route Analysis (Researcher Agent)
+## 🔍 2. Hotel & Route Analysis
 - **Verified Hotels:** Resort & Budget options available.
 - **Best Transport:** Self-drive or Express Train for maximum comfort.
 """
@@ -369,11 +369,11 @@ def generate_smart_fallback(prompt: str, system_prompt: str = "") -> str:
     # --- 3. TECH / SOFTWARE DOMAIN ---
     elif is_tech:
         if "planner" in sys_lower:
-            return f"""### 🎯 Planner Agent - Software Architecture Plan
+            return f"""### 🎯 Software Development Roadmap
 
 **Tech Goal:** {prompt_clean}
 
-#### 📋 Development Roadmap:
+#### 📋 Execution Steps:
 1. **Phase 1: Environment & Dependency Setup**
    - Install Python 3.10+, virtual environment, and install dependencies (`pip install streamlit google-genai`).
 2. **Phase 2: Frontend & API Integration**
@@ -384,13 +384,13 @@ def generate_smart_fallback(prompt: str, system_prompt: str = "") -> str:
    - Deploy to Vercel, Streamlit Community Cloud, or Render.
 """
         else:
-            return f"""# 🚀 Software Engineering Blueprint - {topic_title}
+            return f"""# 🚀 Software Engineering Solution - {topic_title}
 
 **Project Goal:** {prompt_clean}
 
 ---
 
-## 🎯 1. Technical Stack & Roadmap (Planner Agent)
+## 🎯 1. Technical Stack & Roadmap
 - **Frontend:** Streamlit / HTML5 / CSS3 / JavaScript.
 - **Backend:** FastAPI / Python / Google Gemini API / Groq SDK.
 - **Deployment:** Vercel / Streamlit Cloud.
@@ -399,7 +399,7 @@ def generate_smart_fallback(prompt: str, system_prompt: str = "") -> str:
     # --- 4. GENERAL / BUSINESS / OTHER DOMAINS ---
     else:
         if "planner" in sys_lower:
-            return f"""### 🎯 Planner Agent Roadmap & Milestone Breakdown
+            return f"""### 🎯 Action Plan & Milestone Breakdown
 
 **Primary Goal:** {prompt_clean}
 
@@ -414,26 +414,26 @@ def generate_smart_fallback(prompt: str, system_prompt: str = "") -> str:
    - Validate outcome and deliver final report.
 """
         elif "researcher" in sys_lower:
-            return f"""### 🔍 Researcher Agent Technical Report
+            return f"""### 🔍 Technical & Domain Findings
 
 **Domain:** {prompt_clean}
 
-#### 📊 Technical Data & Findings:
+#### 📊 Data & Analysis:
 - **Best Standards:** Applied proven industry practices for **{prompt_clean}**.
 - **Resource Allocation:** Essential tools and prerequisites categorized.
 - **Efficiency:** High performance with cost-effective execution.
 """
         else:
-            return f"""# 🚀 Executive Strategy & Implementation Report
+            return f"""# 🚀 Executive Solution & Implementation Guide
 
 **Project Topic:** {prompt_clean}
 
 ---
 
 ## 📌 Executive Summary
-Synthesized 5-Agent Collaborative Report for **"{prompt_clean}"**.
+Synthesized Master Solution for **"{prompt_clean}"**.
 
-## 🎯 1. Master Action Plan (Planner Agent)
+## 🎯 1. Master Action Plan
 - **Phase 1:** Core scoping and milestone definition.
 - **Phase 2:** Resource allocation and research analysis.
 - **Phase 3:** Execution and quality review.
